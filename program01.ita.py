@@ -124,26 +124,6 @@ def generate_digits(bases: List[int]) -> List[List[int]]:
     return compatible_digits
 
 
-def find_doubles(bases: List[int]) -> Set[int]:
-    """
-    Data una lista di basi, genera la lista di tutte le possibili
-    combinazioni valide di cifre rappresentabili con quelle basi,
-    converte ciascuna combinazione nell'intero corrispondente e cerca
-    quali interi appaiono più volte.
-
-    Ritorna l'insieme di valori interi che hanno più di una
-    rappresentazione nelle basi date.
-
-    Esempio: find_doubles([4, 3, 2]) -> {3, 4, 5, 6, 7, 8, 9, 10}
-    Infatti, ad esempio il numero 10 con queste basi ha le due rappresentazioni
-    [3, 1, 1] -> 3*4^0 + 1*3^1 + 1*2^2 = 10
-    [0, 2, 1] -> 0*4^0 + 2*3^1 + 1*2^2 = 10
-    """
-    # SCRIVI QUI IL TUO CODICE
-    set = []
-    return set
-
-
 def permutation(list_a: List[int], list_b: List[int]) -> List[List[int]]:
     # dati 2 array fare le permutazioni
     lst = []
@@ -161,9 +141,45 @@ def permutation(list_a: List[int], list_b: List[int]) -> List[List[int]]:
     return lst
 
 
+def find_doubles(bases: List[int]) -> Set[int]:
+    """
+    Data una lista di basi, genera la lista di tutte le possibili
+    combinazioni valide di cifre rappresentabili con quelle basi,
+    converte ciascuna combinazione nell'intero corrispondente e cerca
+    quali interi appaiono più volte.
+
+    Ritorna l'insieme di valori interi che hanno più di una
+    rappresentazione nelle basi date.
+
+    Esempio: find_doubles([4, 3, 2]) -> {3, 4, 5, 6, 7, 8, 9, 10}
+    Infatti, ad esempio il numero 10 con queste basi ha le due rappresentazioni
+    [3, 1, 1] -> 3*4^0 + 1*3^1 + 1*2^2 = 10
+    [0, 2, 1] -> 0*4^0 + 2*3^1 + 1*2^2 = 10
+    """
+    # SCRIVI QUI IL TUO CODICE
+    set1 = []
+    # genera la lista di tutte le possibili combinazioni valide di cifre rappresentabili con quelle basi
+    combination_list = generate_digits(bases)
+    # converte ciascuna combinazione nell'intero corrispondente
+    decoded_list = []
+    for i in range(len(combination_list)):
+        decoded_list.append(decode_digits(combination_list[i], bases))
+    print("decoded:")
+    print(decoded_list)
+    # cerca quali interi appaiono più volte
+    for d in range(len(decoded_list)):
+        for j in range(d, len(decoded_list)):
+            if d != j:  # caso in cui gli indici si equagliano, da evitare si
+                if decoded_list[d] == decoded_list[j]:
+                    set1.append(decoded_list[d])
+
+    # insieme di valori interi che hanno più di una rappresentazione nelle basi date
+    set1.sort()
+    return set1
+
+
 ###################################################################################
 if __name__ == "__main__":
-    pass
     # inserisci qui i tuoi test
     # se vuoi provare il tuo codice su piccoli dati
     # nota per eseguire questo main devi usare program.py
@@ -175,3 +191,5 @@ if __name__ == "__main__":
         print("TEST1")
 
     print(generate_digits([2, 5]))
+
+    print(find_doubles([4, 3, 2]))  # {3, 4, 5, 6, 7, 8, 9, 10}
