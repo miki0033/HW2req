@@ -67,7 +67,7 @@ from typing import List, Set
 
 
 def decode_digits(digits: List[int], bases: List[int]) -> int:
-    '''
+    """
     Riceve una lista di cifre ed una lista di basi della stessa lunghezza.
     Calcola il valore intero che corrisponde come spiegato prima.
     Parameters
@@ -78,32 +78,36 @@ def decode_digits(digits: List[int], bases: List[int]) -> int:
 
     Esempio: decode_digits( [1, 1, 2], [2, 3, 4] ) -> 36
         infatti   1*2^0 + 1*3^1 + 2*4^2 = 36
-    '''
+    """
     # SCRIVI QUI IL TUO CODICE
-    pass
+    sum = 0
+    for i in range(len(digits)):
+        sum += digits[i] * (bases[i] ** i)
+
+    return sum
 
 
-def generate_digits(bases : List[int] ) -> List[List[int]]:
-    '''
+def generate_digits(bases: List[int]) -> List[List[int]]:
+    """
     Data una lista di basi, genera la lista di tutte le possibili
     combinazioni di cifre compatibili con le basi date.  Ciascuna
     combinazione è una lista di cifre compatibili.  Ovvero per
     ciascuna posizione che corrisponde a una base B contiene una delle
     possibili cifre in [0..B-1]
-    
+
     Esempio:  generate_digits([2, 5]) produce la lista
     [ [0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2], [0, 3], [1, 3], [0, 4], [1, 4] ]
 
-    Nota: l'ordine nella lista finale non conta e anche 
+    Nota: l'ordine nella lista finale non conta e anche
     [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 0], [1, 1], [1, 2], [1, 3], [1, 4]]
     è una soluzione valida.
-    '''
+    """
     # SCRIVI QUI IL TUO CODICE
     pass
 
 
-def find_doubles(bases : List[int]) -> Set[int]:
-    '''
+def find_doubles(bases: List[int]) -> Set[int]:
+    """
     Data una lista di basi, genera la lista di tutte le possibili
     combinazioni valide di cifre rappresentabili con quelle basi,
     converte ciascuna combinazione nell'intero corrispondente e cerca
@@ -113,18 +117,23 @@ def find_doubles(bases : List[int]) -> Set[int]:
     rappresentazione nelle basi date.
 
     Esempio: find_doubles([4, 3, 2]) -> {3, 4, 5, 6, 7, 8, 9, 10}
-    Infatti, ad esempio il numero 10 con queste basi ha le due rappresentazioni 
+    Infatti, ad esempio il numero 10 con queste basi ha le due rappresentazioni
     [3, 1, 1] -> 3*4^0 + 1*3^1 + 1*2^2 = 10
     [0, 2, 1] -> 0*4^0 + 2*3^1 + 1*2^2 = 10
-    '''
+    """
     # SCRIVI QUI IL TUO CODICE
     pass
 
 
 ###################################################################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
     # inserisci qui i tuoi test
     # se vuoi provare il tuo codice su piccoli dati
     # nota per eseguire questo main devi usare program.py
     # come cliente e non come modulo ossia con python program.py
+
+    dd = decode_digits([1, 1, 2], [2, 3, 4])  # -> 36
+    #  1*2^0 + 1*3^1 + 2*4^2 = 36
+    if dd == 36:
+        print("TEST1")
