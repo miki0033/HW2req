@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#   #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Consideriamo la codifica posizionale di un numero in base B.
@@ -103,7 +103,29 @@ def generate_digits(bases: List[int]) -> List[List[int]]:
     è una soluzione valida.
     """
     # SCRIVI QUI IL TUO CODICE
-    pass
+    compatible_digits = []
+
+    able_digits = []
+    for b in bases:
+        base_digits = []
+        for i in range(b):
+            base_digits.append(i)
+        able_digits.append(base_digits)
+
+    print(able_digits)
+    # permutazioni di n(len(basis))  liste
+    perm = 0
+    for i in range(len(able_digits)):
+        for c in range(len(able_digits[1])):
+            perm += 1
+
+    print(perm)
+    compatible_digits = able_digits[0]
+    if len(able_digits) > 1:
+        for i in range(1, len(able_digits)):
+            compatible_digits = permutation(compatible_digits, able_digits[i])
+
+    return compatible_digits
 
 
 def find_doubles(bases: List[int]) -> Set[int]:
@@ -122,7 +144,18 @@ def find_doubles(bases: List[int]) -> Set[int]:
     [0, 2, 1] -> 0*4^0 + 2*3^1 + 1*2^2 = 10
     """
     # SCRIVI QUI IL TUO CODICE
-    pass
+    set = []
+    return set
+
+
+def permutation(list_a: List[int], list_b: List[int]) -> List[List[int]]:
+    # dati 2 array fare le permutazioni
+    list = []
+    for i in range(len(list_a)):
+        for j in range(len(list_b)):
+            list.append([list_a[i], list_b[j]])
+
+    return list
 
 
 ###################################################################################
@@ -137,3 +170,5 @@ if __name__ == "__main__":
     #  1*2^0 + 1*3^1 + 2*4^2 = 36
     if dd == 36:
         print("TEST1")
+
+    print(generate_digits([2, 5]))
