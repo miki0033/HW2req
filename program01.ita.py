@@ -111,15 +111,11 @@ def generate_digits(bases: List[int]) -> List[List[int]]:
         for i in range(b):
             base_digits.append(i)
         able_digits.append(base_digits)
-
-    print(able_digits)
     # permutazioni di n(len(basis))  liste
     perm = 0
     for i in range(len(able_digits)):
         for c in range(len(able_digits[1])):
             perm += 1
-
-    print(perm)
     compatible_digits = able_digits[0]
     if len(able_digits) > 1:
         for i in range(1, len(able_digits)):
@@ -150,12 +146,19 @@ def find_doubles(bases: List[int]) -> Set[int]:
 
 def permutation(list_a: List[int], list_b: List[int]) -> List[List[int]]:
     # dati 2 array fare le permutazioni
-    list = []
+    lst = []
     for i in range(len(list_a)):
         for j in range(len(list_b)):
-            list.append([list_a[i], list_b[j]])
-
-    return list
+            if isinstance(list_a[i], list):
+                temp = []
+                # devo instanziare un nuovo array per non modificare quello iniziale
+                for z in list_a[i]:
+                    temp.append(z)
+                temp.append(list_b[j])
+                lst.append(temp)
+            else:
+                lst.append([list_a[i], list_b[j]])
+    return lst
 
 
 ###################################################################################
