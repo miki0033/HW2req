@@ -169,13 +169,19 @@ def find_doubles(bases: List[int]) -> Set[int]:
     # cerca quali interi appaiono più volte
     for d in range(len(decoded_list)):
         for j in range(d, len(decoded_list)):
-            if d != j:  # caso in cui gli indici si equagliano, da evitare si
+            if d != j:  # caso in cui gli indici si equagliano, da evitare
                 if decoded_list[d] == decoded_list[j]:
-                    set1.append(decoded_list[d])
+                    flag = True
+                    for s in range(len(set1)):  # controlla se il numero è già presente
+                        if decoded_list[d] == set1[s]:
+                            flag = False
+                    if flag:
+                        set1.append(decoded_list[d])
 
     # insieme di valori interi che hanno più di una rappresentazione nelle basi date
     set1.sort()
-    return set1
+
+    return set(set1)
 
 
 ###################################################################################
