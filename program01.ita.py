@@ -164,8 +164,7 @@ def find_doubles(bases: List[int]) -> Set[int]:
     decoded_list = []
     for i in range(len(combination_list)):
         decoded_list.append(decode_digits(combination_list[i], bases))
-    print("decoded:")
-    print(decoded_list)
+
     # cerca quali interi appaiono più volte
     for d in range(len(decoded_list)):
         for j in range(d, len(decoded_list)):
