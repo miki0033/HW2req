@@ -1,4 +1,4 @@
-#   #! /usr/bin/env python3
+# #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Consideriamo la codifica posizionale di un numero in base B.
@@ -104,27 +104,29 @@ def generate_digits(bases: List[int]) -> List[List[int]]:
     """
     # SCRIVI QUI IL TUO CODICE
     compatible_digits = []
-
     able_digits = []
+
     for b in bases:
+        # ricavo la la lista di tutte le possibili combinazioni di cifre compatibili
         base_digits = []
         for i in range(b):
             base_digits.append(i)
         able_digits.append(base_digits)
-    # permutazioni di n(len(basis))  liste
+    # calcolo il numero di combinazioni possibili
     perm = 0
     for i in range(len(able_digits)):
         for c in range(len(able_digits[1])):
             perm += 1
+    #
     compatible_digits = able_digits[0]
     if len(able_digits) > 1:
         for i in range(1, len(able_digits)):
-            compatible_digits = permutation(compatible_digits, able_digits[i])
+            compatible_digits = combination(compatible_digits, able_digits[i])
 
     return compatible_digits
 
 
-def permutation(list_a: List[int], list_b: List[int]) -> List[List[int]]:
+def combination(list_a: List[int], list_b: List[int]) -> List[List[int]]:
     # dati 2 array fare le permutazioni
     lst = []
     for i in range(len(list_a)):

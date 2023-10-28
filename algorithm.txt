@@ -1,0 +1,23 @@
+funzione decode_digits
+inizializzo una variabile sum a 0
+ciclo for sulla dimensione della lista data in input 
+	applico la formula digit*(base^indice) sommado tutti gli elementi per la base indicata
+ritorno la variabile sum
+
+funzione generate_digits
+inizializzo due liste
+ricavo la la lista di tutte le possibili combinazioni di cifre compatibili iterando sulla base, 
+ricavando in una lista tutte le cifre maggiori uguali di zero e minori della base
+calcolo il numero di combinazioni possibili con due cicli annidati
+controllo quante liste sono state formate a partire dalle basi se maggiore di uno,
+itero sul numero rimanente di liste delle basi e vado a formare le combinazioni,
+per formare le combinazioni utilizzo una funzione ausiliaria che prende in input 2 liste di possibili valori e ne ricava le combinazioni
+utilizzando due cicli annidati che iterano sulle due liste prese come parametro per ricavare le combinazioni
+ritorno la lista di tutte le possibili combinazioni di cifre compatibili con le basi date.
+
+funzione find_doubles
+inizializzo un'area di memoria che andrà a contenere i valori interi che hanno più di una rappresentazione nelle basi date
+richiamo la funzione generate_digits sulle basi date, ricavando una lista di tutte le possibili combinazioni valide di cifre rappresentabili con quelle basi
+inizializzo un'altra lista che andrà a contenere ciascuna combinazione nell'intero corrispondente
+la riempiamo con un ciclo for andando a richiamare la funzione decode_digits mandato come parametri la lista delle combinazioni e le basi
+poi con dei cicli for annidati cerca quali interi appaiono più volte, prendendo i valori duplicati una sola volta
