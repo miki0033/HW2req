@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Ajeje la bibliotecaria ha recentemente trovato una stanza nascosta
@@ -101,8 +101,8 @@ import os
 
 
 """
-0 1 2 3 4 5 6 7 - +
-A B C D E F G ? b #
+0 1 2 3 4 5 6 - +
+A B C D E F G b #
 
 caratteri ripeturi indicano la durata=> la durata deve diventare un numero
 spazio=pausa=P
@@ -126,5 +126,43 @@ def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
     pass
 
 
+def traduttore(arr: list[str]) -> list[str]:
+    """0 1 2 3 4 5 6 - +
+    A B C D E F G b #"""
+    umkansan = []
+    translate = {
+        "0": "A",
+        "1": "B",
+        "2": "C",
+        "3": "D",
+        "4": "E",
+        "5": "F",
+        "6": "G",
+        "-": "b",
+        "+": "#",
+    }
+
+    for i in range(len(arr)):
+        durata = 1
+        notaprev = ""
+        try:
+            if notaprev != arr[i]:
+                notaprev = arr[i]
+                umkansan.append(translate[arr[i]])
+                # TODO
+            elif arr[i] == arr[i + 1]:
+                durata += 1
+            elif arr[i] != arr[i + 1] and arr[i + 1] == "+" or arr[i + 1] == "-":
+                pass
+
+        except IndexError:
+            break
+
+    return umkansan
+
+
 if __name__ == "__main__":
-    Umkansanize("Tarahumara", "Umkansanian")
+    # Umkansanize("Tarahumara", "Umkansanian")
+    arr = ["0", "0", "0", "1", "-", "1", "-", "2"]
+    res = traduttore(arr)
+    print(res)
