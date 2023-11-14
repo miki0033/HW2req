@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''
+"""
 Ajeje la bibliotecaria ha recentemente trovato una stanza nascosta
 nella biblioteca di Keras (un posto fantastico situato in
 Umkansa, il villaggio più grande delle Montagne Bianche).
@@ -95,12 +95,36 @@ Nota 4: Usiamo la notazione inglese delle note A B C D E F G.
 
 Nota 5: potete usare le funzioni della libreria 'os' per creare le directory necessarie
 (ad esempio os.makedirs)
-'''
+"""
 
 import os
 
-def Umkansanize(source_root:str, target_root:str) -> dict[str,int]:
+
+"""
+0 1 2 3 4 5 6 7 - +
+A B C D E F G ? b #
+
+caratteri ripeturi indicano la durata=> la durata deve diventare un numero
+spazio=pausa=P
+
+spartito scritto al contrario e dall'alto verso il basso
+idea: fare il trim in base a \n e leggere l'array al contrario
+il file index continen i percorsi
+salvare le canzoni in nuovi file denominati per titoloDellaCanzone.txt
+mantenere la struttura file
+fare un file index con "titolo"+ +lughezza_del_brano
+ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
+durata+=durate_note+pause
+
+RETURN: un dizionario chiave="titoloCanzone" valore=durata
+
+
+"""
+
+
+def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
     pass
+
 
 if __name__ == "__main__":
     Umkansanize("Tarahumara", "Umkansanian")
