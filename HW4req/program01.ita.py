@@ -141,19 +141,28 @@ def traduttore(arr: list[str]) -> list[str]:
         "-": "b",
         "+": "#",
     }
-
+    durata = 1
+    notaprev = ""
+    modificatore = ""
     for i in range(len(arr)):
-        durata = 1
-        notaprev = ""
+        # TOFIX: se sta una B dopo un B- viene calcolata come durarta
         try:
-            if notaprev != arr[i]:
+            if arr[i] == "+" or arr[i] == "-":  # caso + -
+                if arr[i] == modificatore:
+                    pass
+                else:
+                    umkansan.append(translate[arr[i]])
+                    modificatore = arr[i]
+
+            elif notaprev != arr[i]:  # caso cambio di nota
+                if durata > 1:
+                    umkansan.append(durata)
+                    durata = 1
                 notaprev = arr[i]
                 umkansan.append(translate[arr[i]])
-                # TODO
-            elif arr[i] == arr[i + 1]:
+
+            elif arr[i] == notaprev:  # caso stessa nota
                 durata += 1
-            elif arr[i] != arr[i + 1] and arr[i + 1] == "+" or arr[i + 1] == "-":
-                pass
 
         except IndexError:
             break
@@ -163,6 +172,6 @@ def traduttore(arr: list[str]) -> list[str]:
 
 if __name__ == "__main__":
     # Umkansanize("Tarahumara", "Umkansanian")
-    arr = ["0", "0", "0", "1", "-", "1", "-", "2"]
+    arr = ["0", "0", "0", "1", "-", "1", "-", "1", "2"]
     res = traduttore(arr)
     print(res)
