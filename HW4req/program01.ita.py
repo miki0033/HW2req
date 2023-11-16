@@ -119,6 +119,19 @@ RETURN: un dizionario chiave="titoloCanzone" valore=durata
 
 
 def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
+    paths = readPathTarahumara()
+    for directory in paths:
+        for pathfile in directory:
+            charlist = readFileTarahumara(pathfile)
+            traduction = translator(charlist)
+
+            # TODO: ricavare il nome del file dal path
+            # if(nomefile=="index.txt"):
+            # ricavare i titoli in qualche modo
+            titolo = ""
+
+            status = saveFileUmkansanian(traduction, titolo, pathfile)
+            print(titolo + ": " + str(status))  # restituisce true se va a buon fine
     pass
 
 
@@ -139,38 +152,69 @@ def translator(arr: list[str]) -> list[str]:
         "-": "b",
         "+": "#",
         " ": "P",
+        "0-": "Ab",
+        "1-": "Bb",
+        "2-": "Cb",
+        "3-": "Db",
+        "4-": "Eb",
+        "5-": "Fb",
+        "6-": "Gb",
+        "0+": "A#",
+        "1+": "B#",
+        "2+": "C#",
+        "3+": "D#",
+        "4+": "E#",
+        "5+": "F#",
+        "6+": "G#",
     }
     durata = 1
     notaprev = ""
-    modificatore = ""
-    # TODO: fare append della nota poi del modificatore poi la durata
-    for i in range(len(arr)):
-        # TOFIX: se sta una B dopo un B- viene calcolata come durata
-        try:
-            if arr[i] == "+" or arr[i] == "-":  # caso + -
-                if arr[i] == modificatore:
-                    pass
-                else:
-                    umkansan.append(translate[arr[i]])
-                    modificatore = arr[i]
 
-            elif notaprev != arr[i]:  # caso cambio di nota
+    arr = aggregazione(arr)
+    for i in range(len(arr)):
+        try:
+            if notaprev != arr[i]:  # caso cambio di nota
                 notaprev = arr[i]
                 print(translate[arr[i]])
                 umkansan.append(translate[arr[i]])
-                if durata > 0:
-                    umkansan.append(durata)
-                    durata = 1
+                umkansan.append(durata)
+                # durata = 1
 
             elif arr[i] == notaprev:  # caso stessa nota
                 # if arr[i+1]!=modificatore:
-
-                durata += 1
+                print(translate[arr[i]])
+                umkansan[len(umkansan) - 1] = int(umkansan[len(umkansan) - 1]) + 1
+                # durata += 1
 
         except IndexError:
             break
 
     return umkansan
+
+
+def aggregazione(arr: list[str]) -> list[str]:
+    """
+    aggrega i + e i - con la nota precedente
+    RETURN: lista con gli elementi aggregati
+    """
+    result = []
+    print(type(arr))
+
+    if not arr:  # Check if the input list is empty
+        return result
+
+    for i in range(len(arr)):
+        # try:
+        if arr[i] == "+":
+            result[len(result) - 1] += arr[i]
+        elif arr[i] == "-":
+            result[len(result) - 1] += arr[i]
+        else:
+            result.append(arr[i])
+
+        # except IndexError:
+        # print("errore: IndexError")
+    return result
 
 
 def readPathTarahumara():
@@ -184,13 +228,20 @@ def readPathTarahumara():
 
     filelist = []
     current_dir = os.getcwd()
-    print(current_dir)  # .
+    # isdir = os.path.isdir(current_dir)
+    # print(isdir)
+    # print(type(current_dir))  # .
     for i in range(1, 11):
-        # TOFIX: non legge il path
-        mypath = f"./test0{str(i)}/"
+        if i < 10:  # da test01 a test09
+            mypath = f"{current_dir}/test0{str(i)}/"
+        else:  # test10
+            mypath = f"{current_dir}/test{str(i)}/"
 
-        onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-        filelist.append(onlyfiles)
+        isdir = os.path.isdir(mypath)
+        # print(mypath + ": " + str(isdir))
+        if isdir:
+            onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+            filelist.append(onlyfiles)
 
     return filelist
 
@@ -200,7 +251,11 @@ def readFileTarahumara(path) -> list[str]:
     Deve leggere il file dal path indicato e trasformarlo in una list[str]
     Considerare che:spartito scritto al contrario e dall'alto verso il basso
     idea: fare lo splice in base a \n e leggere l'array al contrario
+    RESTITUISCE la lista dei caratteri nel file
     """
+    # if(filename==./index.txt)
+    # gestire i file index in modo diverso
+    # else:
     result = []
     file = open(path, "r")
     line = file.readline()
@@ -240,14 +295,31 @@ def createIndexFile():
 
 
 if __name__ == "__main__":
-    paths = readPathTarahumara()
-    print(paths)
+    # paths = readPathTarahumara()
 
     # Umkansanize("Tarahumara", "Umkansanian")
-    arr = ["0", "0", "0", "1", "-", "1", "-", "1", "2"]
+    arr = [
+        "0",
+        "0",
+        "0",
+        "1",
+        "-",
+        "1",
+        "-",
+        "1",
+        "2",
+        "4",
+        "+",
+        "4",
+        "+",
+        "4",
+        "+",
+        "4",
+        "+",
+    ]
     res = translator(arr)
     print(res)
-
+"""
     # readFileTarahumara("./test01/0.txt")
 
     arr = readFileTarahumara(
@@ -255,3 +327,5 @@ if __name__ == "__main__":
     )  # => D:\Computer\Pc\HW2\HWreq\HW4req\test01.expected\The alluring eel hops vacuum..txt
     res = translator(arr)
     print(res)
+
+    """
