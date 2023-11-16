@@ -173,6 +173,28 @@ def translator(arr: list[str]) -> list[str]:
     return umkansan
 
 
+def readPathTarahumara():
+    """
+    Controlla la cartella test01 e
+    legge tutti i path presenti nella cartella e
+    ne restituisce la lista
+    """
+    from os import listdir
+    from os.path import isfile, join
+
+    filelist = []
+    current_dir = os.getcwd()
+    print(current_dir)  # .
+    for i in range(1, 11):
+        # TOFIX: non legge il path
+        mypath = f"./test0{str(i)}/"
+
+        onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+        filelist.append(onlyfiles)
+
+    return filelist
+
+
 def readFileTarahumara(path) -> list[str]:
     """
     Deve leggere il file dal path indicato e trasformarlo in una list[str]
@@ -185,10 +207,8 @@ def readFileTarahumara(path) -> list[str]:
     while line != "":  # in python EOF non è null, è ""
         line = line.replace("\n", "")
         linelist = [*line]
-        # print(line)  # print di test
-        linelist.reverse()  # invertire la linea, controllare la funzione
-        # print(linelist)  # print di test
-        for nota in linelist:  # [[],[],[]] trasformare in un array unico
+        linelist.reverse()  # invertire la linea
+        for nota in linelist:
             result.append(nota)
         line = file.readline()
 
@@ -220,6 +240,9 @@ def createIndexFile():
 
 
 if __name__ == "__main__":
+    paths = readPathTarahumara()
+    print(paths)
+
     # Umkansanize("Tarahumara", "Umkansanian")
     arr = ["0", "0", "0", "1", "-", "1", "-", "1", "2"]
     res = translator(arr)
