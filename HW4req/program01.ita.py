@@ -104,12 +104,8 @@ import os
 0 1 2 3 4 5 6 - +
 A B C D E F G b #
 
-caratteri ripeturi indicano la durata=> la durata deve diventare un numero
-spazio=pausa=P
 
-spartito scritto al contrario e dall'alto verso il basso
-idea: fare il trim in base a \n e leggere l'array al contrario
-il file index continen i percorsi
+il file index contiene i percorsi
 salvare le canzoni in nuovi file denominati per titoloDellaCanzone.txt
 mantenere la struttura file
 fare un file index con "titolo"+ +lughezza_del_brano
@@ -126,7 +122,9 @@ def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
     pass
 
 
-def traduttore(arr: list[str]) -> list[str]:
+def translator(arr: list[str]) -> list[str]:
+    """caratteri ripeturi indicano la durata=> la durata deve diventare un numero
+    spazio=pausa=P"""
     """0 1 2 3 4 5 6 - +
     A B C D E F G b #"""
     umkansan = []
@@ -140,12 +138,13 @@ def traduttore(arr: list[str]) -> list[str]:
         "6": "G",
         "-": "b",
         "+": "#",
+        " ": "P",
     }
     durata = 1
     notaprev = ""
     modificatore = ""
     for i in range(len(arr)):
-        # TOFIX: se sta una B dopo un B- viene calcolata come durarta
+        # TOFIX: se sta una B dopo un B- viene calcolata come durata
         try:
             if arr[i] == "+" or arr[i] == "-":  # caso + -
                 if arr[i] == modificatore:
@@ -162,6 +161,8 @@ def traduttore(arr: list[str]) -> list[str]:
                 umkansan.append(translate[arr[i]])
 
             elif arr[i] == notaprev:  # caso stessa nota
+                # if arr[i+1]!=modificatore:
+
                 durata += 1
 
         except IndexError:
@@ -170,8 +171,45 @@ def traduttore(arr: list[str]) -> list[str]:
     return umkansan
 
 
+def readFileTarahumara(path) -> list[str]:
+    """
+    Deve leggere il file dal path indicato e trasformarlo in una list[str]
+    Considerare che:spartito scritto al contrario e dall'alto verso il basso
+    idea: fare lo splice in base a \n e leggere l'array al contrario
+    """
+    result = ""
+    file = open(path, "r")
+    while file != null:  # in python EOF non è null, controllare cosa sia
+        line = file.readline()
+        line.reverse()  # invertire la linea, controllare la funzione
+        result += line
+
+    result = result.split()  # controllare che splitti la stringa in una list[str]
+    return result
+
+
+def saveFileUmkansanian(arr: list[str], titolo: str) -> bool:
+    """
+    Deve scrivere il file,
+    salvare le canzoni in nuovi file denominati per titoloDellaCanzone.txt
+    mantenere la struttura file
+
+    ritorna true se la creazione del file è andata a buon fine, altrimenti false
+    """
+    pass
+
+
+def createIndexFile():
+    """
+    Si deve occupare di creare il file di index
+    ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
+    durata+=durate_note+pause
+    """
+    pass
+
+
 if __name__ == "__main__":
     # Umkansanize("Tarahumara", "Umkansanian")
     arr = ["0", "0", "0", "1", "-", "1", "-", "1", "2"]
-    res = traduttore(arr)
+    res = translator(arr)
     print(res)
