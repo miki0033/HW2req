@@ -143,6 +143,7 @@ def translator(arr: list[str]) -> list[str]:
     durata = 1
     notaprev = ""
     modificatore = ""
+    # TODO: fare append della nota poi del modificatore poi la durata
     for i in range(len(arr)):
         # TOFIX: se sta una B dopo un B- viene calcolata come durata
         try:
@@ -154,11 +155,12 @@ def translator(arr: list[str]) -> list[str]:
                     modificatore = arr[i]
 
             elif notaprev != arr[i]:  # caso cambio di nota
-                if durata > 1:
+                notaprev = arr[i]
+                print(translate[arr[i]])
+                umkansan.append(translate[arr[i]])
+                if durata > 0:
                     umkansan.append(durata)
                     durata = 1
-                notaprev = arr[i]
-                umkansan.append(translate[arr[i]])
 
             elif arr[i] == notaprev:  # caso stessa nota
                 # if arr[i+1]!=modificatore:
@@ -177,14 +179,22 @@ def readFileTarahumara(path) -> list[str]:
     Considerare che:spartito scritto al contrario e dall'alto verso il basso
     idea: fare lo splice in base a \n e leggere l'array al contrario
     """
-    result = ""
+    result = []
     file = open(path, "r")
-    while file != null:  # in python EOF non è null, controllare cosa sia
+    line = file.readline()
+    while line != "":  # in python EOF non è null, è ""
+        line = line.replace("\n", "")
+        linelist = [*line]
+        # print(line)  # print di test
+        linelist.reverse()  # invertire la linea, controllare la funzione
+        # print(linelist)  # print di test
+        for nota in linelist:  # [[],[],[]] trasformare in un array unico
+            result.append(nota)
         line = file.readline()
-        line.reverse()  # invertire la linea, controllare la funzione
-        result += line
 
-    result = result.split()  # controllare che splitti la stringa in una list[str]
+    # result = result.split()  # controllare che splitti la stringa in una list[str]
+
+    file.close()
     return result
 
 
@@ -196,6 +206,7 @@ def saveFileUmkansanian(arr: list[str], titolo: str) -> bool:
 
     ritorna true se la creazione del file è andata a buon fine, altrimenti false
     """
+
     pass
 
 
@@ -211,5 +222,13 @@ def createIndexFile():
 if __name__ == "__main__":
     # Umkansanize("Tarahumara", "Umkansanian")
     arr = ["0", "0", "0", "1", "-", "1", "-", "1", "2"]
+    res = translator(arr)
+    print(res)
+
+    # readFileTarahumara("./test01/0.txt")
+
+    arr = readFileTarahumara(
+        "D:/Computer/Pc/HW2/HWreq/HW4req/test01/0.txt"
+    )  # => D:\Computer\Pc\HW2\HWreq\HW4req\test01.expected\The alluring eel hops vacuum..txt
     res = translator(arr)
     print(res)
