@@ -138,7 +138,7 @@ def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
                     durata += n
 
             songlist[titolo] = durata
-    createIndexFile(songlist)
+    createIndexFile(songlist, target_root)
 
     pass
 
@@ -331,19 +331,53 @@ def saveFileUmkansanian(destination: str, titolo: str, translation: list[str]) -
     return True
 
 
-def createIndexFile(songlist: dict) -> bool:
+def createIndexFile(songlist: dict, destination: str) -> bool:
     """
     Si deve occupare di creare il file di index
     ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
 
     """
     # creare il file
+    current = os.getcwd()
+    listdir = os.listdir()
+    exist = False
+    for dir in listdir:
+        if dir == destination:
+            exist = True
+    if not exist:
+        os.makedirs(current + "\\" + destination)
+
+    filename = "index.txt"
+    f = open(filename, "w")
 
     # ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
+    dizionario_ordinato = dict(sorted(songlist.items(), key=custom_sort))
+    """
+    print(dizionario_ordinato)
+    for row in dizionario_ordinato:
+        print(row)
+    """
+    text = ""
+    for key, value in dizionario_ordinato.items():
+        row = f'"{key}" {value}\n'
+        print(row)
+        text += row
 
+    f.write(text)
+    f.close()
     # spostarlo nella directory giusta
+    try:
+        os.remove(current + "\\" + destination + "\\" + filename)
+    except FileNotFoundError:
+        pass
+    os.rename(current + "\\" + filename, current + "\\" + destination + "\\" + filename)
+    # ritorno true se andato a buon fine
+    return True
 
-    pass
+
+def custom_sort(item):
+    # Se i valori sono uguali, ordina per chiave in ordine alfabetico
+    return (-item[1], item[0])
 
 
 if __name__ == "__main__":
