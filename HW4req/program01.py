@@ -140,7 +140,7 @@ def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
             songlist[titolo] = durata
     createIndexFile(songlist, target_root)
 
-    pass
+    return songlist
 
 
 def translator(arr: list[str]) -> list[str]:
@@ -237,7 +237,7 @@ def readPathTarahumara(folder):
         onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
         filelist = onlyfiles
     else:
-        print("FILE NON TROVATO-> path: " + current + "/" + folder)
+        print("FILE NON TROVATO-> path: " + current_dir + "/" + folder)
 
     return filelist
 
