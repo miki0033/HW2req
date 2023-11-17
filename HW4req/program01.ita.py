@@ -120,21 +120,25 @@ RETURN: un dizionario chiave="titoloCanzone" valore=durata
 
 def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
     paths = readPathTarahumara(source_root)
-
-    # i = 1
     titleconverter = readIndexFile(source_root)
-
+    songlist = {}
     for filename in paths:
         current_dir = os.getcwd()
         mypath = f"{current_dir}/{source_root}/{filename}"
         charlist = readFileTarahumara(mypath)
-        print(filename)
         if filename != "index.txt":
             traduction = translator(charlist)
-            print(traduction)
             titolo = titleconverter[filename]
             status = saveFileUmkansanian(target_root, titolo, traduction)
-            print(titolo + ": " + str(status))  # restituisce true se va a buon fine
+            # print(titolo + ": " + str(status))  # restituisce true se va a buon fine
+
+            durata = 0
+            for n in traduction:
+                if type(n) == int:
+                    durata += n
+
+            songlist[titolo] = durata
+    createIndexFile(songlist)
 
     pass
 
@@ -228,12 +232,12 @@ def readPathTarahumara(folder):
     current_dir = os.getcwd()
     mypath = f"{current_dir}/{folder}/"
     isdir = os.path.isdir(mypath)
-    print(mypath + ":" + str(isdir))
+    # print(mypath + ":" + str(isdir))
     if isdir:
         onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
         filelist = onlyfiles
     else:
-        print("File non trovato")
+        print("FILE NON TROVATO-> path: " + current + "/" + folder)
 
     return filelist
 
@@ -313,7 +317,6 @@ def saveFileUmkansanian(destination: str, titolo: str, translation: list[str]) -
     # scrivo sul file i caratteri
     text = ""
     for nt in translation:
-        print(nt)
         text += str(nt)
 
     f.write(text)
@@ -328,12 +331,18 @@ def saveFileUmkansanian(destination: str, titolo: str, translation: list[str]) -
     return True
 
 
-def createIndexFile():
+def createIndexFile(songlist: dict) -> bool:
     """
     Si deve occupare di creare il file di index
     ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
-    durata+=durate_note+pause=> basta sommare i numeri presenti nella traduzione
+
     """
+    # creare il file
+
+    # ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
+
+    # spostarlo nella directory giusta
+
     pass
 
 
