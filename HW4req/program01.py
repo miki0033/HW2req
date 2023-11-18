@@ -137,18 +137,26 @@ def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
         mypath = obj["path"] + obj["file"]
         charlist = readFileTarahumara(mypath)
         filename = obj["file"]
+        path: str = obj["path"]
         if filename != "index.txt":
             traduction = translator(charlist)
-            titolo = titleconverter[filename]
+            relativepath = ""
+            part = path.split("/")
+
+            for i in range(2, len(part) - 1):
+                if part[i] == source_root:
+                    part[i] = target_root
+                relativepath += part[i] + "/"
+            relativepath += part[len(part) - 1]
+            relativepath += filename
+
+            titolo = titleconverter[relativepath]
             # ricavare la cartella di destinazione
-            path: str = obj["path"]
+
             destination = path.replace(source_root, target_root)
             """
             destination = ""
-            for i in range(len(part)):
-                if part[i] == source_root:
-                    part[i] = target_root
-                destination += part[i] + "/"
+            
                 """
             # print(destination)
 
@@ -157,10 +165,11 @@ def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
             for n in traduction:  # calcola durata
                 if type(n) == int:
                     durata += n
-            addSongs(mappa, destination, titolo, durata)
 
-    for mp in mappa:
-        createIndexFile(mappa[mp], destination)
+            songlist[titolo] = durata
+    createIndexFile(songlist, target_root)
+
+    return songlist
 
     return songlist
 
@@ -369,19 +378,15 @@ def checkDirectory(destination) -> bool:
     return exist
 
 
-def createIndexFile(list: dict, destination: str) -> bool:
+def createIndexFile(songlist: dict, destination: str) -> bool:
     """
     Si deve occupare di creare il file di index
     ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
 
     """
 
-    songlist = {}
-    for ls in list:
-        songlist.update(ls)
     # creare il file
     current = os.getcwd()
-    listdir = os.listdir()
     if not checkDirectory(destination):
         os.makedirs(destination)
 
@@ -431,7 +436,7 @@ if __name__ == "__main__":
     # Umkansanize("Tarahumara", "Umkansanian")
     # current = os.getcwd()
 
-    folder = "test03"
+    folder = "test02"
     destination = f"{folder}.out"
     Umkansanize(folder, destination)
 
