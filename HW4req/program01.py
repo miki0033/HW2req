@@ -171,8 +171,6 @@ def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
 
     return songlist
 
-    return songlist
-
 
 def translator(arr: list[str]) -> list[str]:
     """caratteri ripeturi indicano la durata=> la durata deve diventare un numero
