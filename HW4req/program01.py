@@ -99,6 +99,9 @@ Nota 5: potete usare le funzioni della libreria 'os' per creare le directory nec
 
 import os
 
+from os import listdir
+from os.path import isfile, join
+
 
 """
 0 1 2 3 4 5 6 - +
@@ -124,26 +127,40 @@ RETURN: un dizionario chiave="titoloCanzone" valore=durata
 
 
 def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
-    paths = readPathTarahumara(source_root)
+    paths = readPathTarahumara(source_root)  # list obj: path nomefile
     titleconverter = readIndexFile(source_root)
+    mappa = {}
     songlist = {}
-    for filename in paths:
+    for obj in paths:
         current_dir = os.getcwd()
-        mypath = f"{current_dir}/{source_root}/{filename}"
+        # mypath = f"{current_dir}/{source_root}/{filename}"
+        mypath = obj["path"] + obj["file"]
         charlist = readFileTarahumara(mypath)
+        filename = obj["file"]
         if filename != "index.txt":
             traduction = translator(charlist)
             titolo = titleconverter[filename]
-            status = saveFileUmkansanian(target_root, titolo, traduction)
-            # print(titolo + ": " + str(status))  # restituisce true se va a buon fine
+            # ricavare la cartella di destinazione
+            path: str = obj["path"]
+            destination = path.replace(source_root, target_root)
+            """
+            destination = ""
+            for i in range(len(part)):
+                if part[i] == source_root:
+                    part[i] = target_root
+                destination += part[i] + "/"
+                """
+            # print(destination)
 
+            status = saveFileUmkansanian(destination, titolo, traduction)  # todo
             durata = 0
-            for n in traduction:
+            for n in traduction:  # calcola durata
                 if type(n) == int:
                     durata += n
+            addSongs(mappa, destination, titolo, durata)
 
-            songlist[titolo] = durata
-    createIndexFile(songlist, target_root)
+    for mp in mappa:
+        createIndexFile(mappa[mp], destination)
 
     return songlist
 
@@ -230,26 +247,33 @@ def readPathTarahumara(folder):
     legge tutti i path presenti nella cartella e
     ne restituisce la lista
     """
-    from os import listdir
-    from os.path import isfile, join
 
     filelist = []
     current_dir = os.getcwd()
     mypath = f"{current_dir}/{folder}/"
     isdir = os.path.isdir(mypath)
-    # print(mypath + ":" + str(isdir))
     if isdir:
-        onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-        filelist = onlyfiles
+        onlyfiles = []
+        filelist = readPathFilesTarahumara(mypath, onlyfiles)
     else:
         print("FILE NON TROVATO-> path: " + current_dir + "/" + folder)
 
     return filelist
 
 
+def readPathFilesTarahumara(path: str, pFilelist: list):
+    for f in listdir(path):  # scorre i file nella directory
+        if os.path.isfile(path + f):
+            pFilelist.append({"file": f, "path": path})
+        else:
+            pFilelist = readPathFilesTarahumara(path + f + "/", pFilelist)
+    return pFilelist
+
+
 def readIndexFile(path) -> dict:
     res = []
     result = {}
+    print(path)
     current = os.getcwd()
     try:
         file = open(current + "/" + path + "/index.txt", "r")
@@ -305,16 +329,10 @@ def saveFileUmkansanian(destination: str, titolo: str, translation: list[str]) -
 
     ritorna true se la creazione del file è andata a buon fine, altrimenti false
     """
-    # create destination if not exist
     current = os.getcwd()
-    listdir = os.listdir()
-    exist = False
-    for dir in listdir:
-        if dir == destination:
-            exist = True
-    if not exist:
-        os.makedirs(current + "\\" + destination)
-
+    # create destination if not exist
+    if not checkDirectory(destination):
+        os.makedirs(destination)
     # creo il file con il nome titolo.txt
     filename = str(titolo) + ".txt"
     f = open(filename, "w")
@@ -328,54 +346,66 @@ def saveFileUmkansanian(destination: str, titolo: str, translation: list[str]) -
     f.close()
     # sposto il file nella sua cartella
     try:
-        os.remove(current + "\\" + destination + "\\" + filename)
+        os.remove(destination + "\\" + filename)
     except FileNotFoundError:
         pass
-    os.rename(current + "\\" + filename, current + "\\" + destination + "\\" + filename)
+    os.rename(current + "\\" + filename, destination + "\\" + filename)
     # ritorno true se andato a buon fine
     return True
 
 
-def createIndexFile(songlist: dict, destination: str) -> bool:
+def checkDirectory(destination) -> bool:
+    try:
+        listdir = os.listdir(destination)
+        exist = True
+        """
+    exist = False
+    for dir in listdir:
+        if dir == destination:
+            exist = True
+    """
+    except FileNotFoundError:
+        exist = False
+    return exist
+
+
+def createIndexFile(list: dict, destination: str) -> bool:
     """
     Si deve occupare di creare il file di index
     ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
 
     """
+
+    songlist = {}
+    for ls in list:
+        songlist.update(ls)
     # creare il file
     current = os.getcwd()
     listdir = os.listdir()
-    exist = False
-    for dir in listdir:
-        if dir == destination:
-            exist = True
-    if not exist:
-        os.makedirs(current + "\\" + destination)
+    if not checkDirectory(destination):
+        os.makedirs(destination)
 
     filename = "index.txt"
     f = open(filename, "w")
 
     # ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
     dizionario_ordinato = dict(sorted(songlist.items(), key=custom_sort))
-    """
-    print(dizionario_ordinato)
-    for row in dizionario_ordinato:
-        print(row)
-    """
+
     text = ""
     for key, value in dizionario_ordinato.items():
         row = f'"{key}" {value}\n'
-        print(row)
+        # print(row)
         text += row
 
     f.write(text)
     f.close()
     # spostarlo nella directory giusta
+    # sposto il file nella sua cartella
     try:
-        os.remove(current + "\\" + destination + "\\" + filename)
+        os.remove(destination + "\\" + filename)
     except FileNotFoundError:
         pass
-    os.rename(current + "\\" + filename, current + "\\" + destination + "\\" + filename)
+    os.rename(current + "\\" + filename, destination + "\\" + filename)
     # ritorno true se andato a buon fine
     return True
 
@@ -385,17 +415,30 @@ def custom_sort(item):
     return (-item[1], item[0])
 
 
+def addSongs(mappa, path, song, durata):  # song=titolo della canzone
+    temp = {}
+    temp[song] = durata
+    if path in mappa:
+        mappa[path].append(temp)
+    else:
+        mappa[path] = []
+        mappa[path].append(temp)
+
+
 if __name__ == "__main__":
     # paths = readPathTarahumara()
 
     # Umkansanize("Tarahumara", "Umkansanian")
     # current = os.getcwd()
-    # folder = "test01"
-    # destination = f"{folder}.out"
-    # Umkansanize(folder, destination)
+
+    folder = "test03"
+    destination = f"{folder}.out"
+    Umkansanize(folder, destination)
+
+    # readPathTarahumara(folder)
 
     # index = readIndexFile(folder)
-    # print(index)
+
     """
     arr = [
         "0",
@@ -416,8 +459,7 @@ if __name__ == "__main__":
         "4",
         "+",
     ]
-    res = translator(arr)
-    print(res)"""
+"""
 
 """
     # readFileTarahumara("./test01/0.txt")
@@ -426,6 +468,5 @@ if __name__ == "__main__":
         "D:/Computer/Pc/HW2/HWreq/HW4req/test01/0.txt"
     )  # => D:\Computer\Pc\HW2\HWreq\HW4req\test01.expected\The alluring eel hops vacuum..txt
     res = translator(arr)
-    print(res)
 
     """
