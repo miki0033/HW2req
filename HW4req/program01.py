@@ -203,7 +203,7 @@ def aggregazione(arr: list[str]) -> list[str]:
                 result.append(arr[i])
 
         except IndexError:
-            print("errore: IndexError")
+            pass
     return result
 
 
@@ -216,7 +216,7 @@ def readPathTarahumara(folder):
         onlyfiles = []
         filelist = readPathFilesTarahumara(mypath, onlyfiles)
     else:
-        print("FILE NON TROVATO-> path: " + current_dir + "/" + folder)
+        pass
 
     return filelist
 
@@ -249,7 +249,7 @@ def readIndexFile(path) -> dict:
             line = file.readline()
 
     except FileNotFoundError:
-        print("FILE NON TROVATO-> path: " + current + "/" + path + "/index.txt")
+        pass
 
     return result
 
