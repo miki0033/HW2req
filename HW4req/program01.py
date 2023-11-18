@@ -323,15 +323,5 @@ def custom_sort(item):
     return (-item[1], item[0])
 
 
-def addSongs(mappa, path, song, durata):
-    temp = {}
-    temp[song] = durata
-    if path in mappa:
-        mappa[path].append(temp)
-    else:
-        mappa[path] = []
-        mappa[path].append(temp)
-
-
 if __name__ == "__main__":
     pass
