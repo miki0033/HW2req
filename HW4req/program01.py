@@ -117,6 +117,11 @@ RETURN: un dizionario chiave="titoloCanzone" valore=durata
 
 """
 
+# ERRORI NEI TEST:
+# [test10, test02, test04, test05, test07, test08]
+# =>hanno un alberatura divera, quindi non viene discesa correttamente
+# GLOBAL VARIABLE DETECTED
+
 
 def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
     paths = readPathTarahumara(source_root)
@@ -384,10 +389,10 @@ if __name__ == "__main__":
     # paths = readPathTarahumara()
 
     # Umkansanize("Tarahumara", "Umkansanian")
-    current = os.getcwd()
-    folder = "test01"
-    destination = f"{folder}.out"
-    Umkansanize(folder, destination)
+    # current = os.getcwd()
+    # folder = "test01"
+    # destination = f"{folder}.out"
+    # Umkansanize(folder, destination)
 
     # index = readIndexFile(folder)
     # print(index)
