@@ -133,6 +133,11 @@ def jigsaw(
     width = len(puzzle_img[0]) * tile_size
     height = len(puzzle_img) * tile_size
 
+    print("puzzle: ")
+    print(puzzle_img)
+    print("plain: ")
+    print(plain_img)
+
     # Inizializza la chiave di cifratura
     encryption_key = []
 
@@ -143,6 +148,7 @@ def jigsaw(
             puzzle_tile = puzzle_img[y][x * tile_size : (x + 1) * tile_size]
             plain_tile = plain_img[y][x * tile_size : (x + 1) * tile_size]
 
+            print(puzzle_tile)
             # Confronta i tasselli e aggiungi la rotazione alla chiave
             if puzzle_tile == plain_tile:
                 key_row += "N"
@@ -193,15 +199,14 @@ def jigsaw(
 
 
 if __name__ == "__main__":
-    print(
-        jigsaw(
-            "tests/test01_in.png",
-            "tests/test01_exp.png",
-            20,
-            "tests/test01_enc.txt",
-            "output/test01_out.txt",
-        )
+    out = jigsaw(
+        "tests/test01_in.png",
+        "tests/test01_exp.png",
+        20,
+        "tests/test01_enc.txt",
+        "output/test01_out.txt",
     )
+    # print(out)
 
     # Esempio di utilizzo
     """
