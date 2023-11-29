@@ -1,0 +1,165 @@
+platform linux -- Python 3.9.18, pytest-7.4.3, pluggy-1.3.0 -- /home/andrea/micromamba/bin/python
+cachedir= .pytest_cache
+rootdir= /home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04
+plugins= cov-4.1.0, typeguard-4.1.5, profiling-1.7.0, timeout-2.2.0, json-0.4.0
+timeout= 8.0s
+timeout method= signal
+timeout func_only= False
+collecting ... collected 24 items / 10 deselected / 14 selected
+
+test_01.py==Test==test01_example PASSED
+test_01.py==Test==test02_example PASSED
+test_01.py==Test==test03_example PASSED
+test_01.py==Test==test04_example PASSED
+test_01.py==Test==test05_example PASSED
+test_01.py==Test==test06_example PASSED
+test_01.py==Test==test07_example PASSED
+test_01.py==Test==test08_example PASSED
+test_01.py==Test==test09_example PASSED
+test_01.py==Test==test10_example FAILED
+test_01.py==Test==test_intricacy PASSED
+test_01.py==Test==test_no_globals_or_mutable_args PASSED
+test_01.py==Test==test_untampered_types PASSED
+test_01.py==Test==test_zz_top_types PASSED
+
+=================================== FAILURES ===================================
+_____________________________ Test.test10_example ______________________________
+test_01.py=161= in test10_example
+    return self.do_test(starting_folder,destination, expected)
+        destination = 'test10.out'
+        expected   = {'The Early familiarity programs pagan.'= 19600, 'The abandoned mainstream innovates opportunist.'= 20722, 'The abandoned pea signals lettuce.'= 20296, 'The aboard mailer shelters hatbox.'= 20903, ...}
+        self       = 
+        starting_folder = 'test10'
+test_01.py=51= in do_test
+    result = program.Umkansanize(starting_folder, destination)
+        _          = ['\n']
+        allowed_files = {'test10.out/0/00/000/0000/00000/The green storey trusts castle..txt'= 'twtat', 'test10.out/0/00/000/0000/00001/The qu...connects club..txt'= 'twtat', 'test10.out/0/00/000/0000/00002/The roomy composer computes mosquito..txt'= 'twtat', ...}
+        destination = 'test10.out'
+        expected   = {'The Early familiarity programs pagan.'= 19600, 'The abandoned mainstream innovates opportunist.'= 20722, 'The abandoned pea signals lettuce.'= 20296, 'The aboard mailer shelters hatbox.'= 20903, ...}
+        f          = <_io.TextIOWrapper name='test10/index.txt' mode='r' encoding='UTF-8'>
+        fn         = '0/00/000/0000/00000/0.txt'
+        line       = '"The green storey trusts castle." "0/00/000/0000/00000/0.txt"\n'
+        path       = '0/00/000/0000/00000'
+        program    = 
+        pwd        = '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04'
+        self       = 
+        sn         = 'The green storey trusts castle.'
+        starting_folder = 'test10'
+program01.py=112= in Umkansanize
+    charlist = readFileTarahumara(mypath)
+        charlist   = ['0', '+', '0', '+', '0', '+', ...]
+        destination = '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10.out/'
+        durata     = 20356
+        filename   = '4.txt'
+        i          = 9
+        k          = True
+        mypath     = '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10/index.txt.old'
+        n          = 21
+        obj        = {'file'= 'index.txt.old', 'path'= '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10/'}
+        part       = ['', 'home', 'andrea', 'AA23', 'repo', 'AA23-HW4-req-it', ...]
+        path       = '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10/'
+        paths      = [{'file'= '3.txt', 'path'= '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10/'}, {'file'= 'in...est10/'}, {'file'= '2.txt', 'path'= '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10/'}, ...]
+        relativepath = '4.txt'
+        songlist   = {'The friendly erection distributes programming.'= 19961, 'The pretty transfer pines silk.'= 20356}
+        source_root = 'test10'
+        status     = True
+        target_root = 'test10.out'
+        titleconverter = {'0.txt'= 'The didactic transparency kneels gutter.', '0/0.txt'= 'The chivalrous dinner wails prison.', '0/00/0.txt'= 'The super insomnia interrupts sting.', '0/00/000/0.txt'= 'The equable grand covers grill.', ...}
+        titolo     = 'The pretty transfer pines silk.'
+        traduction = ['A#', 88, 'B', 21, 'C', 3, ...]
+program01.py=265= in readFileTarahumara
+    file = open(path, "r")
+        path       = '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10/index.txt.old'
+        result     = []
+testlib.py=67= in _check_open
+    raise ForbiddenError(f"Opening file '{filename}' is forbidden!")
+E   testlib.ForbiddenError= Opening file '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10/index.txt.old' is forbidden!
+        allowed    = {'test10.out/0/00/000/0000/00000/The green storey trusts castle..txt'= 'twtat', 'test10.out/0/00/000/0000/00001/The qu...connects club..txt'= 'twtat', 'test10.out/0/00/000/0000/00002/The roomy composer computes mosquito..txt'= 'twtat', ...}
+        args       = ('/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10/index.txt.old', 'r')
+        filename   = '/home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/test10/index.txt.old'
+        fn         = 'test10.out/0/00/000/0000/00000/The green storey trusts castle..txt'
+        kargs      = {}
+        m          = 'twtat'
+        mode       = 'r'
+        self       = 
+=============================== warnings summary ===============================
+../../../../../../micromamba/lib/python3.9/site-packages/stopit/_init_.py=10
+  /home/andrea/micromamba/lib/python3.9/site-packages/stopit/_init_.py=10= DeprecationWarning= pkg_resources is deprecated as an API. See https=//setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+-- Docs= https=//docs.pytest.org/en/stable/how-to/capture-warnings.html
+==================================== PASSES ====================================
+Profiling (from /home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/prof/combined.prof)=
+Wed Nov 22 00=31=25 2023    /home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/prof/combined.prof
+
+         3845343 function calls (3819177 primitive calls) in 3.244 seconds
+
+   Ordered by= internal time
+   List reduced from 1030 to 20 due to restriction <20>
+
+   ncalls  tottime  percall  cumtime  percall filename=lineno(function)
+      782    0.798    0.001    1.553    0.002 program01.py=145(translator)
+      782    0.603    0.001    0.663    0.001 program01.py=196(aggregazione)
+      794    0.348    0.000    0.651    0.001 program01.py=263(readFileTarahumara)
+     1558    0.239    0.000    0.443    0.000 testlib.py=49(_check_open)
+   763765    0.137    0.000    0.137    0.000 {method 'endswith' of 'str' objects}
+  1413497    0.123    0.000    0.123    0.000 {method 'append' of 'list' objects}
+       11    0.104    0.009    2.738    0.249 program01.py=106(Umkansanize)
+      782    0.094    0.000    0.398    0.001 program01.py=278(saveFileUmkansanian)
+1011549/1011248    0.094    0.000    0.094    0.000 {built-in method builtins.len}
+     3163    0.078    0.000    0.090    0.000 {built-in method io.open}
+    46288    0.061    0.000    0.113    0.000 ast.py=256(iter_child_nodes)
+        8    0.048    0.006    0.048    0.006 {built-in method builtins.compile}
+    83938    0.043    0.000    0.052    0.000 ast.py=244(iter_fields)
+     1587    0.031    0.000    0.031    0.000 {method 'close' of '_io.TextIOWrapper' objects}
+     1109    0.026    0.000    0.026    0.000 {built-in method posix.listdir}
+   4862/2    0.023    0.000    0.076    0.038 ast.py=477(generic_visit)
+   159540    0.023    0.000    0.023    0.000 {built-in method builtins.isinstance}
+   5505/1    0.023    0.000    0.056    0.056 ast.py=200(_fix)
+    17653    0.018    0.000    0.114    0.000 ast.py=369(walk)
+    84295    0.017    0.000    0.017    0.000 {built-in method builtins.getattr}
+
+
+- generated json report= /home/andrea/AA23/repo/AA23-HW4-req-it/students/2133061/homework04/program01.log.json -
+
+---------- coverage= platform linux, python 3.9.18-final-0 -----------
+Name           Stmts   Miss  Cover   Missing
+--------------------------------------------
+program01.py     151     11    93%   187-191, 200, 211-212, 257-258, 315, 343
+--------------------------------------------
+TOTAL            151     11    93%
+
+============================== slowest durations ===============================
+1.90s call     test_01.py==Test==test03_example
+0.40s call     test_01.py==Test==test07_example
+0.17s call     test_01.py==Test==test10_example
+0.16s call     test_01.py==Test==test_zz_top_types
+0.11s call     test_01.py==Test==test08_example
+0.10s call     test_01.py==Test==test05_example
+0.04s call     test_01.py==Test==test04_example
+0.03s call     test_01.py==Test==test06_example
+0.03s call     test_01.py==Test==test09_example
+0.02s call     test_01.py==Test==test01_example
+0.02s call     test_01.py==Test==test_intricacy
+0.02s call     test_01.py==Test==test02_example
+0.01s call     test_01.py==Test==test_no_globals_or_mutable_args
+0.01s setup    test_01.py==Test==test01_example
+
+(28 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ============================
+PASSED test_01.py==Test==test01_example
+PASSED test_01.py==Test==test02_example
+PASSED test_01.py==Test==test03_example
+PASSED test_01.py==Test==test04_example
+PASSED test_01.py==Test==test05_example
+PASSED test_01.py==Test==test06_example
+PASSED test_01.py==Test==test07_example
+PASSED test_01.py==Test==test08_example
+PASSED test_01.py==Test==test09_example
+PASSED test_01.py==Test==test_intricacy
+PASSED test_01.py==Test==test_no_globals_or_mutable_args
+PASSED test_01.py==Test==test_untampered_types
+PASSED test_01.py==Test==test_zz_top_types
+FAILED test_01.py==Test==test10_example - testlib.ForbiddenError= Opening fil...
+============ 1 failed, 13 passed, 10 deselected, 1 warning in 3.69s ============
+MAX TEST TIME (232s) REACHED

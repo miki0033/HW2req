@@ -1,4 +1,4 @@
-# #!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Ajeje la bibliotecaria ha recentemente trovato una stanza nascosta
@@ -99,60 +99,50 @@ Nota 5: potete usare le funzioni della libreria 'os' per creare le directory nec
 
 import os
 
-
-"""
-0 1 2 3 4 5 6 - +
-A B C D E F G b #
-
-
-il file index contiene i percorsi
-salvare le canzoni in nuovi file denominati per titoloDellaCanzone.txt
-mantenere la struttura file
-fare un file index con "titolo"+ +lughezza_del_brano
-ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
-durata+=durate_note+pause
-
-RETURN: un dizionario chiave="titoloCanzone" valore=durata
-
-
-"""
-
-# ERRORI NEI TEST:
-# [test10, test02, test04, test05, test07, test08]
-# =>hanno un alberatura divera, quindi non viene discesa correttamente
-# GLOBAL VARIABLE DETECTED
+from os import listdir
+from os.path import isfile, join
 
 
 def Umkansanize(source_root: str, target_root: str) -> dict[str, int]:
     paths = readPathTarahumara(source_root)
     titleconverter = readIndexFile(source_root)
     songlist = {}
-    for filename in paths:
-        current_dir = os.getcwd()
-        mypath = f"{current_dir}/{source_root}/{filename}"
-        charlist = readFileTarahumara(mypath)
-        if filename != "index.txt":
+    for obj in paths:
+        mypath = obj["path"] + obj["file"]
+        charlist = readFileTarahumara(mypath, obj["file"])
+        filename = obj["file"]
+        path: str = obj["path"]
+        if filename == "index.txt.old":
+            pass
+        elif filename != "index.txt":
             traduction = translator(charlist)
-            titolo = titleconverter[filename]
-            status = saveFileUmkansanian(target_root, titolo, traduction)
-            # print(titolo + ": " + str(status))  # restituisce true se va a buon fine
+            relativepath = ""
+            part = path.split("/")
+            k = False
+            for i in range(0, len(part) - 1):
+                if k:
+                    relativepath += part[i] + "/"
+                if part[i] == source_root:
+                    k = True
+            relativepath += filename
+            try:
+                titolo = titleconverter[relativepath]
+                destination = path.replace(source_root, target_root)
+                saveFileUmkansanian(destination, titolo, traduction)
+                durata = 0
+                for n in traduction:
+                    if type(n) == int:
+                        durata += n
+                songlist[titolo] = durata
 
-            durata = 0
-            for n in traduction:
-                if type(n) == int:
-                    durata += n
-
-            songlist[titolo] = durata
+            except KeyError:
+                pass
     createIndexFile(songlist, target_root)
 
     return songlist
 
 
 def translator(arr: list[str]) -> list[str]:
-    """caratteri ripeturi indicano la durata=> la durata deve diventare un numero
-    spazio=pausa=P"""
-    """0 1 2 3 4 5 6 - +
-    A B C D E F G b #"""
     umkansan = []
     translate = {
         "0": "A",
@@ -186,28 +176,26 @@ def translator(arr: list[str]) -> list[str]:
     arr = aggregazione(arr)
     for i in range(len(arr)):
         try:
-            if notaprev != arr[i]:  # caso cambio di nota
+            if notaprev != arr[i]:
                 notaprev = arr[i]
                 umkansan.append(translate[arr[i]])
                 umkansan.append(durata)
 
-            elif arr[i] == notaprev:  # caso stessa nota
+            elif arr[i] == notaprev:
                 umkansan[len(umkansan) - 1] = int(umkansan[len(umkansan) - 1]) + 1
 
         except IndexError:
             break
+        except KeyError:
+            pass
 
     return umkansan
 
 
 def aggregazione(arr: list[str]) -> list[str]:
-    """
-    aggrega i + e i - con la nota precedente
-    RETURN: lista con gli elementi aggregati
-    """
     result = []
 
-    if not arr:  # Check if the input list is empty
+    if not arr:
         return result
 
     for i in range(len(arr)):
@@ -220,31 +208,31 @@ def aggregazione(arr: list[str]) -> list[str]:
                 result.append(arr[i])
 
         except IndexError:
-            print("errore: IndexError")
+            pass
     return result
 
 
 def readPathTarahumara(folder):
-    """
-    Controlla la cartella test01 e
-    legge tutti i path presenti nella cartella e
-    ne restituisce la lista
-    """
-    from os import listdir
-    from os.path import isfile, join
-
     filelist = []
     current_dir = os.getcwd()
     mypath = f"{current_dir}/{folder}/"
     isdir = os.path.isdir(mypath)
-    # print(mypath + ":" + str(isdir))
     if isdir:
-        onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-        filelist = onlyfiles
+        onlyfiles = []
+        filelist = readPathFilesTarahumara(mypath, onlyfiles)
     else:
-        print("FILE NON TROVATO-> path: " + current_dir + "/" + folder)
+        pass
 
     return filelist
+
+
+def readPathFilesTarahumara(path: str, pFilelist: list):
+    for f in listdir(path):
+        if os.path.isfile(path + f):
+            pFilelist.append({"file": f, "path": path})
+        else:
+            pFilelist = readPathFilesTarahumara(path + f + "/", pFilelist)
+    return pFilelist
 
 
 def readIndexFile(path) -> dict:
@@ -256,7 +244,6 @@ def readIndexFile(path) -> dict:
         line = file.readline()
         while line != "":
             res = line.split('" "')
-
             for l in range(len(res)):
                 res[l] = res[l].replace('"', "")
                 res[l] = res[l].replace("\n", "")
@@ -266,166 +253,72 @@ def readIndexFile(path) -> dict:
             line = file.readline()
 
     except FileNotFoundError:
-        print("FILE NON TROVATO-> path: " + current + "/" + path + "/index.txt")
+        pass
 
     return result
 
 
-def readFileTarahumara(path) -> list[str]:
-    """
-    Deve leggere il file dal path indicato e trasformarlo in una list[str]
-    Considerare che:spartito scritto al contrario e dall'alto verso il basso
-    idea: fare lo splice in base a \n e leggere l'array al contrario
-    RESTITUISCE la lista dei caratteri nel file
-    """
+def readFileTarahumara(path: str, filename: str) -> list[str]:
     result = []
-    file = open(path, "r")
-    line = file.readline()
-    while line != "":  # in python EOF non è null, è ""
-        line = line.replace("\n", "")
-        linelist = [*line]
-        linelist.reverse()  # invertire la linea
-        for nota in linelist:
-            result.append(nota)
-        line = file.readline()
-    file.close()
+    if filename != "index.txt.old":
+        with open(path, "r") as file:
+            line = file.readline()
+            while line != "":
+                line = line.replace("\n", "")
+                linelist = [*line]
+                linelist.reverse()
+                for nota in linelist:
+                    result.append(nota)
+                line = file.readline()
+            file.close()
     return result
 
 
 def saveFileUmkansanian(destination: str, titolo: str, translation: list[str]) -> bool:
-    """
-    Parametri:
-    destination= cartella di destinazione
-    translation= testo da scrivere sul file come array di caratteri
-    titolo = nome da dare al file
-
-    Deve scrivere il file,
-    salvare le canzoni in nuovi file denominati per titoloDellaCanzone.txt
-    mantenere la struttura file
-
-    ritorna true se la creazione del file è andata a buon fine, altrimenti false
-    """
-    # create destination if not exist
-    current = os.getcwd()
-    listdir = os.listdir()
-    exist = False
-    for dir in listdir:
-        if dir == destination:
-            exist = True
-    if not exist:
-        os.makedirs(current + "\\" + destination)
-
-    # creo il file con il nome titolo.txt
     filename = str(titolo) + ".txt"
-    f = open(filename, "w")
+    filepath = os.path.join(destination, filename)
+    if not checkDirectory(destination):
+        os.makedirs(destination)
+    with open(filepath, "w") as f:
+        text = ""
+        for nt in translation:
+            text += str(nt)
+        f.write(text)
+        f.close()
 
-    # scrivo sul file i caratteri
-    text = ""
-    for nt in translation:
-        text += str(nt)
-
-    f.write(text)
-    f.close()
-    # sposto il file nella sua cartella
-    try:
-        os.remove(current + "\\" + destination + "\\" + filename)
-    except FileNotFoundError:
-        pass
-    os.rename(current + "\\" + filename, current + "\\" + destination + "\\" + filename)
-    # ritorno true se andato a buon fine
     return True
 
 
-def createIndexFile(songlist: dict, destination: str) -> bool:
-    """
-    Si deve occupare di creare il file di index
-    ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
-
-    """
-    # creare il file
-    current = os.getcwd()
-    listdir = os.listdir()
-    exist = False
-    for dir in listdir:
-        if dir == destination:
-            exist = True
-    if not exist:
-        os.makedirs(current + "\\" + destination)
-
-    filename = "index.txt"
-    f = open(filename, "w")
-
-    # ordinare le canzoni per lunghezza decrescente, a pari durata ordine alfabetico
-    dizionario_ordinato = dict(sorted(songlist.items(), key=custom_sort))
-    """
-    print(dizionario_ordinato)
-    for row in dizionario_ordinato:
-        print(row)
-    """
-    text = ""
-    for key, value in dizionario_ordinato.items():
-        row = f'"{key}" {value}\n'
-        print(row)
-        text += row
-
-    f.write(text)
-    f.close()
-    # spostarlo nella directory giusta
+def checkDirectory(destination) -> bool:
     try:
-        os.remove(current + "\\" + destination + "\\" + filename)
+        listdir = os.listdir(destination)
+        exist = True
     except FileNotFoundError:
-        pass
-    os.rename(current + "\\" + filename, current + "\\" + destination + "\\" + filename)
-    # ritorno true se andato a buon fine
+        exist = False
+    return exist
+
+
+def createIndexFile(songlist: dict, destination: str) -> bool:
+    if not checkDirectory(destination):
+        os.makedirs(destination)
+    filename = "index.txt"
+    filepath = os.path.join(destination, filename)
+    with open(filepath, "w") as f:
+        dizionario_ordinato = dict(sorted(songlist.items(), key=custom_sort))
+        text = ""
+        for key, value in dizionario_ordinato.items():
+            row = f'"{key}" {value}\n'
+            text += row
+
+        f.write(text)
+        f.close()
+
     return True
 
 
 def custom_sort(item):
-    # Se i valori sono uguali, ordina per chiave in ordine alfabetico
     return (-item[1], item[0])
 
 
 if __name__ == "__main__":
-    # paths = readPathTarahumara()
-
-    # Umkansanize("Tarahumara", "Umkansanian")
-    # current = os.getcwd()
-    # folder = "test01"
-    # destination = f"{folder}.out"
-    # Umkansanize(folder, destination)
-
-    # index = readIndexFile(folder)
-    # print(index)
-    """
-    arr = [
-        "0",
-        "0",
-        "0",
-        "1",
-        "-",
-        "1",
-        "-",
-        "1",
-        "2",
-        "4",
-        "+",
-        "4",
-        "+",
-        "4",
-        "+",
-        "4",
-        "+",
-    ]
-    res = translator(arr)
-    print(res)"""
-
-"""
-    # readFileTarahumara("./test01/0.txt")
-
-    arr = readFileTarahumara(
-        "D:/Computer/Pc/HW2/HWreq/HW4req/test01/0.txt"
-    )  # => D:\Computer\Pc\HW2\HWreq\HW4req\test01.expected\The alluring eel hops vacuum..txt
-    res = translator(arr)
-    print(res)
-
-    """
+    Umkansanize("test10", "test10.out")
