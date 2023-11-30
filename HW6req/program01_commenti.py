@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -106,6 +106,7 @@ step     key      deciphering-buffer
 import images
 
 
+# CODICE
 def jigsaw(
     puzzle_image: str,
     plain_image: str,
@@ -113,14 +114,22 @@ def jigsaw(
     encrypted_file: str,
     plain_file: str,
 ) -> list[str]:
+    # Carica le immagini
     puzzle_img = images.load(puzzle_image)
     plain_img = images.load(plain_image)
 
-    encryption_key = []
+    # Ottieni le dimensioni delle immagini
+    width = len(puzzle_img[0]) // tile_size  # * tile_size
+    height = len(puzzle_img) // tile_size  # * tile_size
 
+    # Inizializza la chiave di cifratura
+    encryption_key = []
+    debug = True
+    # Confronta i tasselli e ottieni la chiave
     for y in range(len(puzzle_img) // tile_size):
         key_row = ""
         for x in range(len(puzzle_img[0]) // tile_size):
+            # suddivide le immagini in tasselli
             puzzle_tile = [
                 row[x * tile_size : (x + 1) * tile_size]
                 for row in puzzle_img[y * tile_size : (y + 1) * tile_size]
@@ -133,13 +142,18 @@ def jigsaw(
 
             key_row = obtainKeyChar(key_row, puzzle_tile, plain_tile)
 
+        # Aggiungi la riga della chiave alla chiave totale
         encryption_key.append(key_row)
+
+    # Decifra il file utilizzando la chiave di cifratura
 
     with open(encrypted_file, "r", encoding="utf-8") as encrypted_file_content:
         encrypted_text = encrypted_file_content.read()
 
         decrypted_text = decipherBuffer(encrypted_text, encryption_key)
 
+        # print(decrypted_text)
+        # Salva il file decifrato
         with open(plain_file, "w", encoding="utf-8") as plain_file_content:
             plain_file_content.write(decrypted_text)
 
@@ -147,7 +161,9 @@ def jigsaw(
 
 
 def decipherBuffer(encrypted_text, encryption_key):
-    decryption_key = "".join(encryption_key)
+    decryption_key = "".join(
+        encryption_key
+    )  # Unisci la chiave di cifratura in una singola stringa
     key_length = len(decryption_key)
     decrypted_text = ""
     encrypted_list = [*encrypted_text]
@@ -165,33 +181,36 @@ def decipherBuffer(encrypted_text, encryption_key):
             decrypted_text += char
         elif key_char == "F":
             next_index = (i + 1) % len(encrypted_text)
-            next_char = encrypted_list[next_index]
+            next_char = encrypted_list[next_index]  # swap temp=i+1
 
-            encrypted_list[i] = next_char
+            encrypted_list[i] = next_char  # swap i=temp
 
             decrypted_text += next_char
-            encrypted_list[next_index] = char
+            encrypted_list[next_index] = char  # swap i+1=i
 
+    # caso particolare fine con f devo rimodificare l'inizio
     if key_char == "F":
         char in enumerate(encrypted_list)
         decrypted_text = list(decrypted_text)
         i += 1
-
+        # print(char)
         decrypted_text[0] = char
 
+    # print(key_char)
     decrypted_text = "".join(decrypted_text)
     return decrypted_text
 
 
 def obtainKeyChar(key_row, puzzle_tile, plain_tile):
+    # Confronta i tasselli e aggiungi la rotazione alla chiave
     if matrixEqual(puzzle_tile, plain_tile):
         key_row += "N"
     else:
-        rotated_tile = rotateMatrix(puzzle_tile, 90)
+        rotated_tile = rotateMatrix(puzzle_tile, 90)  # Esegui rotazione a destra
         if matrixEqual(rotated_tile, plain_tile):
             key_row += "R"
         else:
-            flipped_tile = rotateMatrix(puzzle_tile, 180)
+            flipped_tile = rotateMatrix(puzzle_tile, 180)  # Esegui flip
             if matrixEqual(flipped_tile, plain_tile):
                 key_row += "F"
             else:
@@ -203,15 +222,20 @@ def obtainKeyChar(key_row, puzzle_tile, plain_tile):
 def rotateMatrix(matrix, degrees):
     rows = len(matrix)
     cols = len(matrix[0])
+    # Calcola il numero di iterazioni in base agli angoli
     iterations = degrees // 90
+    # Esegui le iterazioni necessarie
     for _ in range(iterations):
+        # Trasponi la matrice
         new_matrix = [[0] * rows for _ in range(cols)]
         for i in range(rows):
             for j in range(cols):
                 new_matrix[j][i] = matrix[i][j]
         matrix = new_matrix
+        # Inverti le colonne
         for i in range(cols):
             matrix[i].reverse()
+        # Aggiorna le dimensioni
         rows, cols = cols, rows
 
     return matrix
@@ -219,21 +243,44 @@ def rotateMatrix(matrix, degrees):
 
 def matrixEqual(matrix1, matrix2):
     if len(matrix1) != len(matrix2) or len(matrix1[0]) != len(matrix2[0]):
+        # Verifica se le dimensioni delle matrici sono diverse
         return False
     for i in range(len(matrix1)):
         for j in range(len(matrix1[0])):
             if matrix1[i][j] != matrix2[i][j]:
+                # Verifica se gli elementi corrispondenti sono diversi
                 return False
+    # Se tutte le condizioni sono soddisfatte, le matrici sono uguali
     return True
 
 
 if __name__ == "__main__":
-    print(
-        jigsaw(
-            "tests/test01_in.png",
-            "tests/test01_exp.png",
-            20,
-            "tests/test01_enc.txt",
-            "output/test01_out.txt",
-        )
+    out = jigsaw(
+        "tests/test03_in.png",
+        "tests/test03_exp.png",
+        44,
+        "tests/test03_enc.txt",
+        "output/test03_out.txt",
     )
+    print(out)
+
+    out = jigsaw(
+        "tests/test06_in.png",
+        "tests/test06_exp.png",
+        40,
+        "tests/test06_enc.txt",
+        "output/test06_out.txt",
+    )
+    print(out)
+
+    out = jigsaw(
+        "tests/test08_in.png",
+        "tests/test08_exp.png",
+        220,
+        "tests/test08_enc.txt",
+        "output/test08_out.txt",
+    )
+    print(out)
+    """
+    decript = decipherBuffer("BNVDCAP", "LFR")
+    print(decript)"""
