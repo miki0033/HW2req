@@ -132,54 +132,67 @@ def jigsaw(
     # Ottieni le dimensioni delle immagini
     width = len(puzzle_img[0]) * tile_size
     height = len(puzzle_img) * tile_size
-
+    """
     print("puzzle: ")
     print(puzzle_img)
     print("plain: ")
     print(plain_img)
-
+    """
     # Inizializza la chiave di cifratura
     encryption_key = []
-
+    debug = True
     # Confronta i tasselli e ottieni la chiave
-    for y in range(len(puzzle_img)):
+    for y in range(
+        len(puzzle_img) // tile_size
+    ):  # indeciso se fare la divisione intera // o il modulo %
         key_row = ""
-        for x in range(len(puzzle_img[0])):
-            puzzle_tile = puzzle_img[y][x * tile_size : (x + 1) * tile_size]
-            plain_tile = plain_img[y][x * tile_size : (x + 1) * tile_size]
+        for x in range(len(puzzle_img[0]) // tile_size):
+            # suddivide le immagini in tasselli
+            puzzle_tile = puzzle_img[y * tile_size : (y + 1) * tile_size][
+                x * tile_size : (x + 1) * tile_size
+            ]
+            plain_tile = plain_img[y * tile_size : (y + 1) * tile_size][
+                x * tile_size : (x + 1) * tile_size
+            ]
 
-            print(puzzle_tile)
-            # Confronta i tasselli e aggiungi la rotazione alla chiave
-            if puzzle_tile == plain_tile:
-                key_row += "N"
-            else:
-                rotated_tile = list(
-                    zip(*reversed(puzzle_tile))
-                )  # Esegui rotazione a destra
-                if rotated_tile == plain_tile:
-                    key_row += "R"
-                else:
-                    flipped_tile = list(reversed(puzzle_tile))  # Esegui flip
-                    if flipped_tile == plain_tile:
-                        key_row += "F"
-                    else:
-                        key_row += "L"
+            if debug:
+                print(puzzle_tile[0][0])
+                print(plain_tile[0][0])
+                debug = False
+
+            key_row = obtainKeyRow(key_row, puzzle_tile, plain_tile)
 
         # Aggiungi la riga della chiave alla chiave totale
         encryption_key.append(key_row)
+
+    # TEST
+    print(encryption_key)
+    result = encryption_key
+    expect = ["LFR", "NFF", "FNR"]
+    print(result == expect)
 
     # Decifra il file utilizzando la chiave di cifratura
 
     with open(encrypted_file, "r") as encrypted_file_content:
         encrypted_text = encrypted_file_content.read()
 
+        decrypted_text = decipherBuffer(encrypted_text, encryption_key)
+
+        # Salva il file decifrato
+        with open(plain_file, "w") as plain_file_content:
+            plain_file_content.write(decrypted_text)
+
+    return encryption_key
+
+
+def decipherBuffer(encrypted_text, encryption_key):
     decryption_key = "".join(
         encryption_key
     )  # Unisci la chiave di cifratura in una singola stringa
     key_length = len(decryption_key)
     decrypted_text = ""
-
-    for i, char in enumerate(encrypted_text):
+    encrypted_list = [*encrypted_text]
+    for i, char in enumerate(encrypted_list):
         key_char = decryption_key[i % key_length]
         if key_char == "R":
             decrypted_text += chr(ord(char) + 1)
@@ -188,14 +201,31 @@ def jigsaw(
         elif key_char == "N":
             decrypted_text += char
         elif key_char == "F":
-            next_char = encrypted_text[(i + 1) % len(encrypted_text)]
-            decrypted_text += next_char + char
+            next_char = encrypted_list[
+                (i + 1) % len(encrypted_text)
+            ]  # next_char prende il carattere successivo secondo specifiche
+            decrypted_text += next_char
+            encrypted_list[(i + 1) % len(encrypted_text)] = char
 
-        # Salva il file decifrato
-        with open(plain_file, "w") as plain_file_content:
-            plain_file_content.write(decrypted_text)
+    return decrypted_text
 
-    return encryption_key
+
+def obtainKeyRow(key_row, puzzle_tile, plain_tile):
+    # Confronta i tasselli e aggiungi la rotazione alla chiave
+    if puzzle_tile == plain_tile:
+        key_row += "N"
+    else:
+        rotated_tile = list(zip(*reversed(puzzle_tile)))  # Esegui rotazione a destra
+        if rotated_tile == plain_tile:
+            key_row += "R"
+        else:
+            flipped_tile = list(reversed(puzzle_tile))  # Esegui flip
+            if flipped_tile == plain_tile:
+                key_row += "F"
+            else:
+                key_row += "L"
+
+    return key_row
 
 
 if __name__ == "__main__":
@@ -207,11 +237,6 @@ if __name__ == "__main__":
         "output/test01_out.txt",
     )
     # print(out)
-
-    # Esempio di utilizzo
     """
-    key = jigsaw(
-        "test01_in.png", "test01_exp.png", 20, "encrypted_file.txt", "decrypted_file.txt"
-    )
-    print("Encryption Key:", key)
-    """
+    decript = decipherBuffer("BNVDCAP", "LFR")
+    print(decript)"""
