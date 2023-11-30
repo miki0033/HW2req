@@ -121,12 +121,7 @@ def jigsaw(
     # Ottieni le dimensioni delle immagini
     width = len(puzzle_img[0]) // tile_size  # * tile_size
     height = len(puzzle_img) // tile_size  # * tile_size
-    """
-    print("puzzle: ")
-    print(puzzle_img)
-    print("plain: ")
-    print(plain_img)
-    """
+
     # Inizializza la chiave di cifratura
     encryption_key = []
     debug = True
@@ -144,53 +139,11 @@ def jigsaw(
                 row[x * tile_size : (x + 1) * tile_size]
                 for row in plain_img[y * tile_size : (y + 1) * tile_size]
             ]
-            """
-            if debug:
-                rows = len(puzzle_tile)
-                cols = len(puzzle_tile[0])
-                print(rows)
-                print(cols)
-                # print(puzzle_tile)
-                print(plain_tile[19][0])
-                print(puzzle_tile[0][0])
-
-                debug = False
-            """
             key_row = obtainKeyChar(key_row, puzzle_tile, plain_tile)
 
         # Aggiungi la riga della chiave alla chiave totale
         encryption_key.append(key_row)
-    """
-    # TEST
-    print(encryption_key)
-    result = encryption_key
-    expect = [
-        "NNNNNRRFNNFRLNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNFLRFNNNNNNNNNNN",
-        "NNNLNNNNNNNNLFFNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNFNNRNNNNNNNNNNN",
-        "NNFNNNFRRFRLNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
-        "NRRNNRNNNNNNFLNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNRNNRNNNNNNNNNNN",
-        "NNNLNNNNNNNNLRNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNFNNNNNNNNNNNNNN",
-        "FNNRNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNFNNNNNNNNNNNNNN",
-        "FNFNNNNNNNNNNNNNNNNNNRLNRRFNNNNNLLFLNLRNNNNNFFNNRRNFNFNNFNNRLNFFRNNN",
-        "LNLNNNNNNNNNNNNNNNNLRNNNNNRFNNNLLNNNNNFLNNNNNNNNNNFNFRNNRNLFNNNNNFNN",
-        "FNRNNNNNFNNNNNNNNNNRNNNRFRNFFNNLNFRRFNNLFNFNNNRNFNNNRFNNNFNNRRFFLNRN",
-        "LNLNNNNNNNNNNNNNFNLNFRNNNFNNRNNNFNNNNLFNRNNNLLNNNFNNRRNNFFNNLNNRRNFL",
-        "LNRLNNNNFLNRFFRNRFFNFNNNNNRNFRLNLNNNNNLNFFNNNNNNNRRNRNNNLNNLLRFNNNNN",
-        "FNNLNNNNNNNNNNNNLNNNFNNNNNRNRFNNRNNNNNFNNNNNNNNNNNRNRRNNLLNLNFNLRNRN",
-        "RFNRFNNNNNNNNFNNFFNNRNNNNNNNNFNNFNNNNNNNLRNNNNNNNNLNRNNNFFNNNNRFNNNN",
-        "NRNNLRNNNNNNRFNLFFNNRNNNNFFNFRFNFNNNNLFNRLLNFNNNNFLNLLNNNLNNNNNNNRRN",
-        "NNNNNLNNNLLFFNFFNNRNNNLNLFNRRNNNNNFNLRNRRNNNNRFNNFNNLLNNNLLNRLNFLFRL",
-        "NNLLLNNNNNNNNRFNNNNNNNLNFNNLNNNFNNFFRNNLNNRNNNNFFNNNFNNNNNFLNLLLNNNL",
-        "NNNNLFRNNNNRFNNNNNNNRRNNNNNLNNNRFLNNNFNLNNNFNLNNNNNNLNNNLNNNLNNNLFRN",
-        "NNNNNNLLNRLLNNNNNNNNNLNNFFNNNNNNNLNRRNNNNNNNNRFRRNLNNNNNNNNNNRFNNNNN",
-        "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNLRRNNNNRNNNNNNNNNNNNNNNNNN",
-        "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNFNFFNNLNNFFNNNNNNNNNNNNNNN",
-        "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNFNNNRNRNLLNNNNNNNNNNNNNNNN",
-        "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNLFLNNNRFNNNNNNNNNNNNNNNNN",
-        "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNFFLRLNNNNNNNNNNNNNNNNNN",
-    ]
-    print(result == expect)
-"""
+
     # Decifra il file utilizzando la chiave di cifratura
 
     with open(encrypted_file, "r", encoding="utf-8") as encrypted_file_content:
@@ -212,12 +165,6 @@ def decipherBuffer(encrypted_text, encryption_key):
     key_length = len(decryption_key)
     decrypted_text = ""
     encrypted_list = [*encrypted_text]
-    """
-    # debug
-    print("riga 217: ")
-    print(len(encrypted_text), len(encrypted_list))
-    print(encrypted_text == encrypted_list)
-    """
 
     for i, char in enumerate(encrypted_list):
         key_char = decryption_key[i % key_length]
@@ -234,21 +181,6 @@ def decipherBuffer(encrypted_text, encryption_key):
             decrypted_text += next_char
             encrypted_list[next_index] = char
 
-        """
-        if key_char == "R":
-            decrypted_text += chr(ord(char) + 1)
-        elif key_char == "L":
-            decrypted_text += chr(ord(char) - 1)
-        elif key_char == "N":
-            decrypted_text += char
-        
-        elif key_char == "F":
-            next_char = encrypted_list[
-                (i + 1) % len(encrypted_text)
-            ]  # next_char prende il carattere successivo secondo specifiche
-            decrypted_text += next_char
-            encrypted_list[(i + 1) % len(encrypted_text)] = char
-        """
     return decrypted_text
 
 
@@ -288,7 +220,6 @@ def rotateMatrix(matrix, degrees):
             matrix[i].reverse()
         # Aggiorna le dimensioni
         rows, cols = cols, rows
-
     return matrix
 
 
