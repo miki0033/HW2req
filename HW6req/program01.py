@@ -105,17 +105,6 @@ step     key      deciphering-buffer
 # %%
 import images
 
-"""
-def jigsaw(
-    puzzle_image: str,
-    plain_image: str,
-    tile_size: int,
-    encrypted_file: str,
-    plain_file: str,
-) -> list[str]:
-    pass
-"""
-
 
 # CODICE
 def jigsaw(
@@ -130,8 +119,8 @@ def jigsaw(
     plain_img = images.load(plain_image)
 
     # Ottieni le dimensioni delle immagini
-    width = len(puzzle_img[0]) * tile_size
-    height = len(puzzle_img) * tile_size
+    width = len(puzzle_img[0]) // tile_size  # * tile_size
+    height = len(puzzle_img) // tile_size  # * tile_size
     """
     print("puzzle: ")
     print(puzzle_img)
@@ -142,25 +131,32 @@ def jigsaw(
     encryption_key = []
     debug = True
     # Confronta i tasselli e ottieni la chiave
-    for y in range(
-        len(puzzle_img) // tile_size
-    ):  # indeciso se fare la divisione intera // o il modulo %
+    for y in range(len(puzzle_img) // tile_size):
         key_row = ""
         for x in range(len(puzzle_img[0]) // tile_size):
             # suddivide le immagini in tasselli
-            puzzle_tile = puzzle_img[y * tile_size : (y + 1) * tile_size][
-                x * tile_size : (x + 1) * tile_size
+            puzzle_tile = [
+                row[x * tile_size : (x + 1) * tile_size]
+                for row in puzzle_img[y * tile_size : (y + 1) * tile_size]
             ]
-            plain_tile = plain_img[y * tile_size : (y + 1) * tile_size][
-                x * tile_size : (x + 1) * tile_size
+
+            plain_tile = [
+                row[x * tile_size : (x + 1) * tile_size]
+                for row in plain_img[y * tile_size : (y + 1) * tile_size]
             ]
 
             if debug:
+                rows = len(puzzle_tile)
+                cols = len(puzzle_tile[0])
+                print(rows)
+                print(cols)
+                # print(puzzle_tile)
+                print(plain_tile[19][0])
                 print(puzzle_tile[0][0])
-                print(plain_tile[0][0])
+
                 debug = False
 
-            key_row = obtainKeyRow(key_row, puzzle_tile, plain_tile)
+            key_row = obtainKeyChar(key_row, puzzle_tile, plain_tile)
 
         # Aggiungi la riga della chiave alla chiave totale
         encryption_key.append(key_row)
@@ -210,22 +206,68 @@ def decipherBuffer(encrypted_text, encryption_key):
     return decrypted_text
 
 
-def obtainKeyRow(key_row, puzzle_tile, plain_tile):
+def obtainKeyChar(key_row, puzzle_tile, plain_tile):
+    isN = False
+    isR = False
+    isF = False
+    isL = False
     # Confronta i tasselli e aggiungi la rotazione alla chiave
-    if puzzle_tile == plain_tile:
+    if matrixEqual(puzzle_tile, plain_tile):
         key_row += "N"
     else:
-        rotated_tile = list(zip(*reversed(puzzle_tile)))  # Esegui rotazione a destra
-        if rotated_tile == plain_tile:
+        rotated_tile = rotateMatrix(puzzle_tile, 90)  # Esegui rotazione a destra
+        if matrixEqual(rotated_tile, plain_tile):
             key_row += "R"
         else:
-            flipped_tile = list(reversed(puzzle_tile))  # Esegui flip
-            if flipped_tile == plain_tile:
+            flipped_tile = rotateMatrix(puzzle_tile, 180)  # Esegui flip
+            if matrixEqual(flipped_tile, plain_tile):
                 key_row += "F"
             else:
                 key_row += "L"
 
     return key_row
+
+
+def rotateMatrix(matrix, degrees):
+    rows = len(matrix)
+    cols = len(matrix[0])
+
+    # print(f"Original Matrix: {rows} rows x {cols} cols")
+
+    # Calcola il numero di iterazioni in base agli angoli
+    iterations = degrees // 90
+
+    # Esegui le iterazioni necessarie
+    for _ in range(iterations):
+        # Trasponi la matrice
+        new_matrix = [[0] * rows for _ in range(cols)]
+        for i in range(rows):
+            for j in range(cols):
+                new_matrix[j][i] = matrix[i][j]
+
+        matrix = new_matrix
+        # print(f"Transposed Matrix: {cols} rows x {rows} cols")
+        # Inverti le colonne
+        for i in range(cols):
+            matrix[i].reverse()
+        # Aggiorna le dimensioni
+        rows, cols = cols, rows
+        # print(f"Updated Matrix: {rows} rows x {cols} cols")
+
+    return matrix
+
+
+def matrixEqual(matrix1, matrix2):
+    if len(matrix1) != len(matrix2) or len(matrix1[0]) != len(matrix2[0]):
+        # Verifica se le dimensioni delle matrici sono diverse
+        return False
+    for i in range(len(matrix1)):
+        for j in range(len(matrix1[0])):
+            if matrix1[i][j] != matrix2[i][j]:
+                # Verifica se gli elementi corrispondenti sono diversi
+                return False
+    # Se tutte le condizioni sono soddisfatte, le matrici sono uguali
+    return True
 
 
 if __name__ == "__main__":
