@@ -190,11 +190,8 @@ def decipherBuffer(encrypted_text, encryption_key):
 
     # caso particolare fine con f devo rimodificare l'inizio
     if key_char == "F":
-        char in enumerate(encrypted_list)
         decrypted_text = list(decrypted_text)
-        i += 1
-        # print(char)
-        decrypted_text[0] = char
+        decrypted_text[0] = encrypted_list[0]
 
     # print(key_char)
     decrypted_text = "".join(decrypted_text)

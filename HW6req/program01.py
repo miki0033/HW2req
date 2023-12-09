@@ -173,11 +173,8 @@ def decipherBuffer(encrypted_text, encryption_key):
             encrypted_list[next_index] = char
 
     if key_char == "F":
-        char in enumerate(encrypted_list)
         decrypted_text = list(decrypted_text)
-        i += 1
-
-        decrypted_text[0] = char
+        decrypted_text[0] = encrypted_list[0]
 
     decrypted_text = "".join(decrypted_text)
     return decrypted_text
