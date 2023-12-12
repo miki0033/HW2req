@@ -75,30 +75,34 @@ def pharaohs_revenge(encrypted_text: str, pharaohs_cypher: dict[str, str]) -> se
 
 def recursive_decypher(node, text, cypher):
     for key, value in cypher.items():
-        flagpos = [-1]
         letters_to_replace = [*key]
-        for letter in letters_to_replace:
-            # controllo se trovo tutte le lettere da rimpiazzare
-            if flagpos[0] == -1:
-                flagpos[0] = text.find(letter)
-            else:
-                flagpos.append(text.find(letter))
-        flag = True
-        for pos in flagpos:
-            if pos == -1:
-                flag = False
-        if flag:  # se le ha trovate tutte effettua la sostituzione
-            textlist = [*text]
-            minpos = min(flagpos)
-            for pos in flagpos:
-                if pos == minpos:
-                    textlist[pos] = value
+
+        for i in range(len(text)):
+            # cerca l'anagramma in una sotto sequenza di caratteri
+            sublen = len(letters_to_replace) + 1
+            preText = text[:i]
+            subtext = text[i : i + sublen]
+            postText = text[i + sublen :]
+            flagpos = [-1]
+            for letter in letters_to_replace:
+                # controllo se trovo tutte le lettere da rimpiazzare
+                subpos = subtext.find(letter)
+                if flagpos[0] == -1 and subpos != -1:
+                    flagpos[0] = subpos + i
                 else:
-                    textlist[pos] = ""
-            text = "".join(textlist)
-            tree_node = tree.Tree(text)
-            node.AddChild(tree_node)
-            recursive_decypher(tree_node, text, cypher)
+                    flagpos.append(subpos + i)
+            flag = True
+            for pos in flagpos:
+                if pos == -1:
+                    flag = False
+            if flag:  # se le ha trovate tutte effettua la sostituzione
+                subtext = value
+                text = preText + subtext
+                text = text + postText
+                # print(text)
+                tree_node = tree.Tree(text)
+                node.AddChild(tree_node)
+                recursive_decypher(tree_node, text, cypher)
 
 
 def check_leaf_value(node, leafsvalue):
