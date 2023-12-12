@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Il tuo caro amico Pico de Paperis ti ha mandato un messaggio molto strano scarabocchiato su una cartolina.
@@ -44,50 +44,66 @@ NOTA: la funzione/metodo ricorsivo/o deve essere definita a livello più esterno
       altrimenti fallirete il test di ricorsione.
 """
 
+"""
+    Cosa fare:
+    1)Ricavare tutte le possibili combinazioni da una parola togliendo una lettera
+      e vedere se una di queste combinazioni corrisponde
+    2)Se l'anagramma non è traducibile si ha una sequenza finale
+    3)Ricavare l'insieme delle sequenze finali e prendere le più corte
+"""
+
 
 def pharaohs_revenge(encrypted_text: str, pharaohs_cypher: dict[str, str]) -> set[str]:
-    # inserisci qui la tua implementazione
-    def apply_transformations(text, transformations):
-        transformed_texts = set()
-        for pattern, replacement in transformations.items():
-            indices = [i for i in range(len(text)) if text.startswith(pattern, i)]
-            for index in indices:
-                new_text = text[:index] + replacement + text[index + len(pattern) :]
-                transformed_texts.add(new_text)
-        return transformed_texts
-
-    def find_shortest_sequences(text, transformations):
-        possible_sequences = apply_transformations(text, transformations)
-        if not possible_sequences:
-            return {text}
-        shortest_sequences = set()
-        min_length = float("inf")
-        for sequence in possible_sequences:
-            sub_sequences = find_shortest_sequences(sequence, transformations)
-            length = min(len(sub_seq) for sub_seq in sub_sequences)
-            if length < min_length:
-                min_length = length
-                shortest_sequences = sub_sequences
-            elif length == min_length:
-                shortest_sequences.update(sub_sequences)
-        return shortest_sequences
-
     return find_shortest_sequences(encrypted_text, pharaohs_cypher)
 
 
-# Esempio di utilizzo
-encrypted_text = "astronaut-flying-cyrcus"
-pharaohs_cypher = {
-    "tuar": "me",
-    "cniy": "op",
-    "sorta": "tur",
-    "fult": "at",
-    "rycg": "nc",
-}
-result = pharaohs_revenge(encrypted_text, pharaohs_cypher)
-print(result)
+def apply_transformations(text, transformations):
+    """
+    La funzione apply_transformations è utilizzata per applicare le trasformazioni a una data sequenza.
+    L'insieme risultante delle sequenze finali più brevi viene restituito alla fine.
+    """
+    transformed_texts = set()
+    for key, value in transformations.items():
+        # prende chiavi e valore del cifrario
+        # print(key)
+        # print(value)
+        indices = [i for i in range(len(text)) if text.startswith(key, i)]
+        for index in indices:
+            new_text = text[:index] + value + text[index + len(key) :]
+            transformed_texts.add(new_text)
+    return transformed_texts
+
+
+def find_shortest_sequences(text, transformations):
+    """
+    funzione ricorsiva che trova le sequenze finali più brevi
+    applicando ripetutamente le trasformazioni del cifrario
+    """
+    possible_sequences = apply_transformations(text, transformations)
+    if not possible_sequences:
+        return {text}
+    shortest_sequences = set()
+    min_length = float("inf")
+    for sequence in possible_sequences:
+        sub_sequences = find_shortest_sequences(sequence, transformations)
+        length = min(len(sub_seq) for sub_seq in sub_sequences)
+        if length < min_length:
+            min_length = length
+            shortest_sequences = sub_sequences
+        elif length == min_length:
+            shortest_sequences.update(sub_sequences)
+    return shortest_sequences
 
 
 if __name__ == "__main__":
-    pass
-    # inserisci qui i tuoi test personali
+    encrypted_text = "astronaut-flying-cyrcus"
+    pharaohs_cypher = {
+        "tuar": "me",
+        "cniy": "op",
+        "sorta": "tur",
+        "fult": "at",
+        "rycg": "nc",
+    }
+    result = pharaohs_revenge(encrypted_text, pharaohs_cypher)
+    print(result == {"tmeopcus", "metopcus", "ameopcus", "atmepcus"})
+    print(result)
