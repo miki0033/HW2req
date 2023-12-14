@@ -57,18 +57,18 @@ import tree
 def pharaohs_revenge(encrypted_text: str, pharaohs_cypher: dict[str, str]) -> set[str]:
     root = tree.Tree(None)  # inizializzo un albero
     recursive_decypher(root, encrypted_text, pharaohs_cypher)
-    print(root.__repr__)
     # cercare nelle foglie dell'albero la sequenza con lunghezza minima
     leafsvalue = set()
     check_leaf_value(root, leafsvalue)
-    print("FOGLIE:")
-    print(leafsvalue)
     minimum = float("inf")
     result = set()
     for value in leafsvalue:
         if value != None:
+            if minimum > len(value):
+                result.clear()
             minimum = min(minimum, len(value))
-            result.add(value)
+            if minimum == len(value):
+                result.add(value)
 
     return result
 
@@ -95,11 +95,11 @@ def recursive_decypher(node, text, cypher):
             for pos in flagpos:
                 if pos == -1:
                     flag = False
+
             if flag:  # se le ha trovate tutte effettua la sostituzione
                 subtext = value
                 text = preText + subtext
                 text = text + postText
-                # print(text)
                 tree_node = tree.Tree(text)
                 node.AddChild(tree_node)
                 recursive_decypher(tree_node, text, cypher)
@@ -127,3 +127,10 @@ if __name__ == "__main__":
     result = pharaohs_revenge(encrypted_text, pharaohs_cypher)
     print(result == {"tmeopcus", "metopcus", "ameopcus", "atmepcus"})
     print(result)
+
+    encrypted_text = "aaabaaac"
+    pharaohs_cypher = {"aa": "bc", "bb": "c", "cc": "d"}
+    expected = {"d"}
+    res = pharaohs_revenge(encrypted_text, pharaohs_cypher)
+    print(res == expected)
+    print(res)
