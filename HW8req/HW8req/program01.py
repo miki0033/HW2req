@@ -62,7 +62,9 @@ def pharaohs_revenge(encrypted_text: str, pharaohs_cypher: dict[str, str]) -> se
     check_leaf_value(root, leafsvalue)
     minimum = float("inf")
     result = set()
+    print(leafsvalue)
     for value in leafsvalue:
+        # BUG: manda in result una sola stringa
         if value != None:
             if minimum > len(value):
                 result.clear()
@@ -84,14 +86,17 @@ def recursive_decypher(node, text, cypher):
             subtext = text[i : i + sublen]
             postText = text[i + sublen :]
             flagpos = [-1]
+            flag = True
             for letter in letters_to_replace:
                 # controllo se trovo tutte le lettere da rimpiazzare
                 subpos = subtext.find(letter)
-                if flagpos[0] == -1 and subpos != -1:
+                if subpos == -1:
+                    flag = False
+                elif flagpos[0] == -1:
                     flagpos[0] = subpos + i
                 else:
                     flagpos.append(subpos + i)
-            flag = True
+
             for pos in flagpos:
                 if pos == -1:
                     flag = False
