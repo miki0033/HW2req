@@ -19,7 +19,7 @@ class Test(testlib.TestCase):
         # timeout = 3 times my implementation on my laptop, with a minimum of 1 second
         TIMEOUT = max(3 * time, 1)  # *2           # VM warp factor
         if DEBUG:
-            import program01 as program
+            import program01_withcomment as program
 
             result = program.pharaohs_revenge(encrypted_text, pharaohs_cypher)
         else:
@@ -37,7 +37,7 @@ class Test(testlib.TestCase):
             ), self.timer(
                 TIMEOUT
             ):
-                import program01 as program
+                import program01_withcomment as program
 
                 result = program.pharaohs_revenge(encrypted_text, pharaohs_cypher)
         self.assertSetEqual(
